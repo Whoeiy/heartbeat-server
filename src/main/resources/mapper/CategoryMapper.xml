@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.dao.CategoryMapper">
+
+    <resultMap id="BaseResultMap" type="generator.entity.Category">
+            <id property="categoryid" column="categoryID" jdbcType="INTEGER"/>
+            <result property="categorylevel" column="categoryLevel" jdbcType="INTEGER"/>
+            <result property="categoryname" column="categoryName" jdbcType="VARCHAR"/>
+            <result property="categoryrank" column="categoryRank" jdbcType="INTEGER"/>
+            <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="createuser" column="createUser" jdbcType="INTEGER"/>
+            <result property="isdeleted" column="isDeleted" jdbcType="INTEGER"/>
+            <result property="parentid" column="parentId" jdbcType="INTEGER"/>
+            <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        categoryID,categoryLevel,categoryName,
+        categoryRank,createTime,createUser,
+        isDeleted,parentId,updateTime
+    </sql>
+</mapper>

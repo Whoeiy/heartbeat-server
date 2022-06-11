@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.entity.Customer">
+
+<!--    Customer getCustomerByPhone(String phone);-->
+    <select id="getCustomerByPhone" resultType="com.example.heartbeatserver.entity.Customer">
+        select * from mall_customer
+        where phone = #{phone}
+    </select>
+
+<!--    Integer addCustomer(Customer customer);-->
+    <insert id="addCustomer" parameterType="com.example.heartbeatserver.entity.Customer">
+        insert into mall_customer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                customerName,
+            </if>
+            <if test="password != null">
+                passwordMd5,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            createTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password, jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone, jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email, jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address, jdbcType=CLOB},
+            </if>
+            now(),
+        </trim>
+    </insert>
+</mapper>
+

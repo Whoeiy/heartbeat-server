@@ -68,4 +68,12 @@ public class CustomerServiceImpl implements ICustomerService {
         // 不匹配
         return ServiceResultEnum.PHONE_PSWD_INCORRECT.getResult();
     }
+
+    @Override
+    public String customerLogout(Integer customerId) {
+        if (this.customerDao.deleteCustomerToken(customerId) > 0) {
+            return ServiceResultEnum.SUCCESS.getResult();
+        }
+        return ServiceResultEnum.DB_ERROR.getResult();
+    }
 }

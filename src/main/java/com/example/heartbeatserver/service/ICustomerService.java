@@ -12,4 +12,7 @@ public interface ICustomerService {
 
     // 用户登录
     String customerLogin(String phone, String passwordMd5);
+
+    // 用户登出
+    String customerLogout(Integer customerId);
 }

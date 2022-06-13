@@ -86,5 +86,11 @@
         set token = #{token, jdbcType=VARCHAR} where customerId = #{uid}
     </update>
 
+<!--    Integer deleteCustomerToken(Integer customerId);-->
+    <delete id="deleteCustomerToken" parameterType="INTEGER">
+        delete from mall_customer_token
+        where customerId = #{customerId, jdbcType=INTEGER}
+    </delete>
+
 </mapper>
 

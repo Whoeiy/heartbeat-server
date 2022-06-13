@@ -25,4 +25,6 @@ public interface CustomerDao {
     // 更新用户token
     Integer updateCustomerToken(Integer uid, String token);
 
+    // 登出，删除用户token
+    Integer deleteCustomerToken(Integer customerId);
 }

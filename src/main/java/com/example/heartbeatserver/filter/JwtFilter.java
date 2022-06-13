@@ -15,11 +15,11 @@ import java.io.IOException;
 import java.util.*;
 
 @Slf4j
-@WebFilter(filterName = "JwtFilter", urlPatterns = "/mall/*")
+@WebFilter(filterName = "JwtFilter", urlPatterns = "/a/*")
 public class JwtFilter implements Filter {
 
     private static final Set<String> ALLOWED_PATHS = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList("/mall/register", "/mall/login")));
+            Arrays.asList("/a/user/register", "/a/user/login")));
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -46,7 +46,7 @@ public class JwtFilter implements Filter {
                 Map<String, Claim> userClaimMap = jwtUtil.verifyToken(token);
 
 //                requestWrapper.addParameter("name", userClaimMap.get("name").asString());
-                requestWrapper.addParameter("uid", userClaimMap.get("id").asInt());
+                requestWrapper.addParameter("customerId", userClaimMap.get("id").asInt());
             } catch (Exception e) {
                 response.setCharacterEncoding("utf-8");
                 response.getWriter().write(JSON.toJSONString(ResultGenerator.genFailResult(e.getMessage())));

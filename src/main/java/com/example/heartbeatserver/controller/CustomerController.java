@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/a/user")
 public class CustomerController {
 
     @Autowired
@@ -52,6 +52,16 @@ public class CustomerController {
             return ResultGenerator.genFailResult(res);
         }
         return ResultGenerator.genSuccessResultData(res);
+    }
+
+    @DeleteMapping("/logout")
+    @ApiOperation("/用户登出")
+    public Result<String> customerLogout(Integer customerId) {
+        String res = this.customerService.customerLogout(customerId);
+        if (res.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            return ResultGenerator.genSuccessResult("登出成功");
+        }
+        return ResultGenerator.genFailResult(ServiceResultEnum.DB_ERROR.getResult());
     }
 
 }

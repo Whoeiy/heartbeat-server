@@ -7,9 +7,9 @@
 # 设置静态资源访问路径    spring.web.resources.static-locations
 
 server:
-  port: 8081
-#  servlet:
-#    context-path: /mall
+  port: 8080
+  servlet:
+    context-path: /mall
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -24,9 +24,15 @@ spring:
   servlet:
     multipart:
       max-file-size: 20MB
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
 
 # jwt配置
 jwt:
   config:
     secret: heartbeat
     ttl: 30000
+
+

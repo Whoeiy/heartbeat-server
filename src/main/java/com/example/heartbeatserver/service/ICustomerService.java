@@ -9,4 +9,7 @@ public interface ICustomerService {
 
     // 根据手机号查询用户信息
     Customer getCustomerByPhone(String phone);
+
+    // 用户登录
+    String customerLogin(String phone, String passwordMd5);
 }

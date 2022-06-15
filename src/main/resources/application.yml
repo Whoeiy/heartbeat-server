@@ -8,6 +8,8 @@
 
 server:
   port: 8080
+  servlet:
+    context-path: /mall
 
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -22,8 +24,15 @@ spring:
   servlet:
     multipart:
       max-file-size: 20MB
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
-# MP 显示运行日志参数
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# jwt配置
+jwt:
+  config:
+    secret: heartbeat
+    ttl: 30000
+
+

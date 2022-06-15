@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.dao.CustomerDao">
+
+    <resultMap id="BaseResultMap" type="com.example.heartbeatserver.entity.Customer">
+        <id column="customerId" jdbcType="INTEGER" property="customerId" />
+        <result column="customerName" jdbcType="VARCHAR" property="name" />
+        <result column="passwordMd5" jdbcType="VARCHAR" property="password" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="address" jdbcType="CLOB" property="address" />
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+<!--    Customer getCustomerByPhone(String phone);-->
+    <select id="getCustomerByPhone" resultMap="BaseResultMap">
+        select * from mall_customer
+        where phone = #{phone}
+    </select>
+
+<!--    Integer getCustomerIdByPhone(String phone);-->
+    <select id="getCustomerIdByPhone">
+        select customerId from mall_customer
+        where phone = #{phone}
+    </select>
+
+<!--    CustomerToken getCustomerTokenByCustomerId(Integer customerId);-->
+    <select id="getCustomerTokenByCustomerId" resultType="com.example.heartbeatserver.entity.CustomerToken">
+        select customerId, token from mall_customer_token
+        where customerId = #{customerId}
+    </select>
+
+<!--    Integer addCustomer(Customer customer);-->
+    <insert id="addCustomer" parameterType="com.example.heartbeatserver.entity.Customer">
+        insert into mall_customer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                customerName,
+            </if>
+            <if test="password != null">
+                passwordMd5,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            createTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name, jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password, jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone, jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email, jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address, jdbcType=CLOB},
+            </if>
+            now(),
+        </trim>
+    </insert>
+
+
+<!--    Integer addCustomerToken(Integer uid, String token);-->
+    <insert id="addCustomerToken">
+        insert into mall_customer_token (customerId, token)
+        values (#{uid, jdbcType=INTEGER}, #{token, jdbcType=CLOB})
+    </insert>
+
+<!--    Integer updateCustomerToken(Integer uid, String token);-->
+    <update id="updateCustomerToken">
+        update mall_customer_token
+        set token = #{token, jdbcType=VARCHAR} where customerId = #{uid}
+    </update>
+
+<!--    Integer deleteCustomerToken(Integer customerId);-->
+    <delete id="deleteCustomerToken" parameterType="INTEGER">
+        delete from mall_customer_token
+        where customerId = #{customerId, jdbcType=INTEGER}
+    </delete>
+
+</mapper>
+

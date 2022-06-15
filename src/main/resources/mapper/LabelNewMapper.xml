@@ -2,13 +2,13 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.heartbeatserver.dao.CategoryMapper">
+<mapper namespace="com.example.heartbeatserver.dao.LabelNewMapper">
 
-    <resultMap id="BaseResultMap" type="com.example.heartbeatserver.entity.Category">
-            <id property="categoryid" column="categoryID" jdbcType="INTEGER"/>
-            <result property="categorylevel" column="categoryLevel" jdbcType="INTEGER"/>
-            <result property="categoryname" column="categoryName" jdbcType="VARCHAR"/>
-            <result property="categoryrank" column="categoryRank" jdbcType="INTEGER"/>
+    <resultMap id="BaseResultMap" type="com.example.heartbeatserver.entity.LabelNew">
+            <id property="labelid" column="labelID" jdbcType="INTEGER"/>
+            <result property="labellevel" column="labelLevel" jdbcType="INTEGER"/>
+            <result property="labelname" column="labelName" jdbcType="VARCHAR"/>
+            <result property="labelrank" column="labelRank" jdbcType="INTEGER"/>
             <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="createuser" column="createUser" jdbcType="INTEGER"/>
             <result property="isdeleted" column="isDeleted" jdbcType="INTEGER"/>
@@ -17,8 +17,8 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        categoryID,categoryLevel,categoryName,
-        categoryRank,createTime,createUser,
+        labelID,labelLevel,labelName,
+        labelRank,createTime,createUser,
         isDeleted,parentId,updateTime
     </sql>
 </mapper>

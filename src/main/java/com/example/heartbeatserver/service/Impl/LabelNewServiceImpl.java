@@ -1,4 +1,4 @@
-package com.example.heartbeatserver.service.impl;
+package com.example.heartbeatserver.service.Impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.heartbeatserver.entity.LabelNew;

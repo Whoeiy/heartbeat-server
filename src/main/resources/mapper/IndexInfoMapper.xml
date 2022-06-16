@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.dao.IndexInfoDao">
+    <resultMap id="CarouselResultMap" type="com.example.heartbeatserver.controller.vo.CarouselVo">
+        <result column="imgUrl" jdbcType="CLOB" property="imgUrl"/>
+        <result column="jumpUrl" jdbcType="CLOB" property="jumpUrl"/>
+    </resultMap>
+
+    <resultMap id="LabelResultMap" type="com.example.heartbeatserver.controller.vo.IndexLabelVo">
+        <id column="labelID" jdbcType="INTEGER" property="labelId" />
+        <result column="labelName" jdbcType="VARCHAR" property="labelName" />
+        <result column="labelLevel" jdbcType="INTEGER" property="labelLevel" />
+    </resultMap>
+
+    <resultMap id="IndexConfigGiftResultMap" type="com.example.heartbeatserver.controller.vo.IndexConfigGiftVo">
+        <id column="giftId" jdbcType="INTEGER" property="giftId" />
+        <result column="imgUrl" jdbcType="CLOB" property="giftCoverImg" />
+        <result column="configName" jdbcType="VARCHAR" property="giftName" />
+        <result column="originalPrice" jdbcType="DOUBLE" property="originalPrice" />
+    </resultMap>
+
+<!--    List<CarouselVo> getCarouselList();-->
+    <select id="getCarouselList" resultMap="CarouselResultMap">
+        select imgUrl, jumpUrl from carousel
+        where isDeleted = 0
+        order by showRank desc, carouselId asc
+        limit 3
+    </select>
+
+<!--    List<IndexLabelVo> getIndexLabelList();-->
+    <select id="getIndexLabelList" resultMap="LabelResultMap">
+        select labelID, labelName, labelLevel
+        from label_new
+        where isDeleted = 0
+        and labelLevel = 1 and parentId = 0
+        order by labelRank desc, labelID asc
+        limit 4
+    </select>
+
+<!--    List<IndexConfigGiftVo> getIndexConfigGiftList(Integer configType);-->
+    <select id="getIndexConfigGiftList" resultMap="IndexConfigGiftResultMap">
+        select c.configName configName, c.giftId giftId, g.imgUrl imgUrl, g.originalPrice originalPrice
+        from config c, gift g
+        where c.configType = #{configType, jdbcType=INTEGER}
+        and c.isDeleted = 0
+        and c.giftId = g.giftId
+        <if test="configType == 2">
+            order by c.configRank desc, c.configId desc
+        </if>
+        <if test="configType != 2">
+            order by c.configRank desc, c.configId asc
+        </if>
+    </select>
+
+</mapper>

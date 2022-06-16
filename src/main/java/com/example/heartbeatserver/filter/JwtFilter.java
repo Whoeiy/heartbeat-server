@@ -19,7 +19,7 @@ import java.util.*;
 public class JwtFilter implements Filter {
 
     private static final Set<String> ALLOWED_PATHS = Collections.unmodifiableSet(new HashSet<>(
-            Arrays.asList("/a/user/register", "/a/user/login")));
+            Arrays.asList("/a/user/register", "/a/user/login", "/a/index/info")));
 
     @Autowired
     private JwtUtil jwtUtil;

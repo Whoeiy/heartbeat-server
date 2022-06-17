@@ -23,11 +23,12 @@ public class LabelController {
     private LabelNewService labelNewService;
 
 
-    @GetMapping("labels")
+    @GetMapping("/labels")
     public Result getAllLevel(Integer customerId){
         QueryWrapper<LabelNew> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("isDeleted", 0)
                 .eq("labelLevel",1)
+                .eq("parentId", 0)
                 .orderByDesc("labelRank")
                 .orderByAsc("labelID");
         List<LabelNew> result = labelNewService.list(queryWrapper);

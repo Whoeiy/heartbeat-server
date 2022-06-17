@@ -8,6 +8,7 @@
             <id property="labelid" column="labelID" jdbcType="INTEGER"/>
             <result property="labellevel" column="labelLevel" jdbcType="INTEGER"/>
             <result property="labelname" column="labelName" jdbcType="VARCHAR"/>
+            <result property="labelicon" column="labelIcon" jdbcType="CLOB"/>
             <result property="labelrank" column="labelRank" jdbcType="INTEGER"/>
             <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="createuser" column="createUser" jdbcType="INTEGER"/>

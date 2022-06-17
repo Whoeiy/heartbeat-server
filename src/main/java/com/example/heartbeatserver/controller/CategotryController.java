@@ -7,6 +7,8 @@ import com.example.heartbeatserver.controller.vo.SecondLevelCategory;
 import com.example.heartbeatserver.controller.vo.ThirdLevelCategory;
 import com.example.heartbeatserver.entity.Category;
 import com.example.heartbeatserver.service.CategoryService;
+import com.example.heartbeatserver.util.Result;
+import com.example.heartbeatserver.util.ResultGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,14 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
+@RequestMapping("/a")
 public class CategotryController {
     @Autowired
     private CategoryService categoryService;
 
 
-    @GetMapping("/allLevel")
-    public List<FirstCategory> getAllLevel(){
+    @GetMapping("/categories")
+    public Result getAllLevel(Integer customerId){
         QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("isDeleted", 0)
                 .eq("categoryLevel",1)
@@ -81,8 +83,7 @@ public class CategotryController {
 //            System.out.println(firstCategory);
             firstCategories.add(firstCategory);
         }
-        System.out.println(firstCategories);
-        return firstCategories;
+        return ResultGenerator.genSuccessResultData(firstCategories);
 
 
     }

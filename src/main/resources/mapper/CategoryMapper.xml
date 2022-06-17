@@ -8,6 +8,7 @@
             <id property="categoryid" column="categoryID" jdbcType="INTEGER"/>
             <result property="categorylevel" column="categoryLevel" jdbcType="INTEGER"/>
             <result property="categoryname" column="categoryName" jdbcType="VARCHAR"/>
+            <result property="categoryicon" column="categoryIcon" jdbcType="CLOB"/>
             <result property="categoryrank" column="categoryRank" jdbcType="INTEGER"/>
             <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="createuser" column="createUser" jdbcType="INTEGER"/>

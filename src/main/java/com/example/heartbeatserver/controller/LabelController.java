@@ -6,6 +6,8 @@ import com.example.heartbeatserver.entity.Category;
 import com.example.heartbeatserver.entity.LabelNew;
 import com.example.heartbeatserver.service.CategoryService;
 import com.example.heartbeatserver.service.LabelNewService;
+import com.example.heartbeatserver.util.Result;
+import com.example.heartbeatserver.util.ResultGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,14 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/labels")
+@RequestMapping("/a")
 public class LabelController {
     @Autowired
     private LabelNewService labelNewService;
 
 
-    @GetMapping("/allLevel")
-    public List<FirstLabel> getAllLevel(){
+    @GetMapping("labels")
+    public Result getAllLevel(Integer customerId){
         QueryWrapper<LabelNew> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("isDeleted", 0)
                 .eq("labelLevel",1)
@@ -77,8 +79,7 @@ public class LabelController {
             firstLabel.setSecondLevelLabelVOS(secondLevelLabels);
             firstLabels.add(firstLabel);
         }
-        System.out.println(firstLabels);
-        return firstLabels;
+        return ResultGenerator.genSuccessResultData(firstLabels);
 
     }
 }

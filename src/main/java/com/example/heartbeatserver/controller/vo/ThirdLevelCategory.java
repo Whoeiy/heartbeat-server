@@ -6,5 +6,6 @@ import lombok.Data;
 public class ThirdLevelCategory {
     private Integer categoryId;
     private Integer categoryLevel;
+    private String categoryIcon;
     private String categoryName;
 }

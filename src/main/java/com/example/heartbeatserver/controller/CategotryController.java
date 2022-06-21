@@ -72,6 +72,7 @@ public class CategotryController {
                     ThirdLevelCategory thirdLevelCategory = new ThirdLevelCategory();
                     thirdLevelCategory.setCategoryId(category3.getCategoryid());
                     thirdLevelCategory.setCategoryLevel(category3.getCategorylevel());
+                    thirdLevelCategory.setCategoryIcon(category3.getCategoryicon());
                     thirdLevelCategory.setCategoryName(category3.getCategoryname());
                     thirdLevelCategories.add(thirdLevelCategory);
                 }

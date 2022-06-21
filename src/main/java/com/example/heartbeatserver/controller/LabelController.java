@@ -69,6 +69,7 @@ public class LabelController {
                     ThirdLevelLabel thirdLevelLabel = new ThirdLevelLabel();
                     thirdLevelLabel.setLabelId(label3.getLabelid());
                     thirdLevelLabel.setLabelLevel(label3.getLabellevel());
+                    thirdLevelLabel.setLabelIcon(label3.getLabelicon());
                     thirdLevelLabel.setLabelName(label3.getLabelname());
                     thirdLevelLabels.add(thirdLevelLabel);
 

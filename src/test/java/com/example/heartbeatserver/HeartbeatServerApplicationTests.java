@@ -1,5 +1,6 @@
 package com.example.heartbeatserver;
 
+import com.example.heartbeatserver.service.Impl.EsGiftServiceImpl;
 import com.example.heartbeatserver.service.Impl.IndexInfoServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,15 @@ class HeartbeatServerApplicationTests {
 //        System.out.println(this.indexInfoService.getIndexLabels());
         System.out.println(this.indexInfoService.getIndexConfigGifts(2));
     }
+
+    @Autowired
+    private EsGiftServiceImpl esGiftService;
+
+    @Test
+    void testImportAll(){
+        System.out.println(this.esGiftService.importAll());
+    }
+
 
 
 

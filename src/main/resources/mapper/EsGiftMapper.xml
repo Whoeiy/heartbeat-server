@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.dao.EsGiftDao">
+
+    <resultMap id="CategoryIdsMap" type="com.example.heartbeatserver.service.pojo.GiftCategoryIds">
+        <result column="categoryID" jdbcType="INTEGER" property="second" />
+        <result column="parentId" jdbcType="INTEGER" property="first" />
+    </resultMap>
+
+    <resultMap id="LabelIdsMap" type="com.example.heartbeatserver.service.pojo.GiftLabelsIds">
+        <result column="labelID" jdbcType="INTEGER" property="second"/>
+        <result column="parentId" jdbcType="INTEGER" property="first"/>
+    </resultMap>
+
+    <resultMap id="GiftResultMap" type="com.example.heartbeatserver.entity.Gift">
+        <id column="giftId" jdbcType="INTEGER" property="giftId" />
+        <result column="giftName" jdbcType="VARCHAR" property="giftName" />
+        <result column="giftIntro" jdbcType="VARCHAR" property="giftIntro" />
+        <result column="originalPrice" jdbcType="DOUBLE" property="originalPrice" />
+        <result column="vipPrice" jdbcType="DOUBLE" property="vipPrice" />
+        <result column="stockNum" jdbcType="INTEGER" property="stockNum" />
+        <result column="giftThirdCategoryId" jdbcType="INTEGER" property="giftThirdCategoryId" />
+        <result column="giftLabelIdList" jdbcType="CLOB" property="giftLabelIdList" />
+        <result column="isShown" jdbcType="INTEGER" property="isShown" />
+        <result column="imgUrl" jdbcType="CLOB" property="imgUrl" />
+        <result column="giftDetail" jdbcType="CLOB" property="giftDetail" />
+        <result column="vendorId" jdbcType="INTEGER" property="vendorId" />
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="isDeleted" jdbcType="INTEGER" property="isDeleted" />
+    </resultMap>
+
+<!--    List<Gift> getAllGiftList();-->
+    <select id="getAllGiftList" resultMap="GiftResultMap">
+        select * from gift
+        <where>
+            isDeleted = 0
+        </where>
+        order by giftId desc
+    </select>
+
+    <!-- List<EsCategory> getGiftCategoriesByIds(@Param("ids") List<Integer> ids); -->
+    <select id="getGiftCategoriesByIds" resultType="com.example.heartbeatserver.entity.EsCategory">
+        select categoryId, categoryLevel, categoryName, categoryIcon, parentId from category
+        where categoryID in (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <!-- GiftCategoryIds getCategoriesIds(Integer third); -->
+    <select id="getCategoriesIds" resultMap="CategoryIdsMap">
+        select categoryID, parentId from category
+        where categoryID in (
+            select parentId from category
+            where categoryID = #{third}
+        )
+    </select>
+
+    <!-- List<EsLabel> getGiftLabelsByIds(@Param("ids") List<Integer> ids); -->
+    <select id="getGiftLabelsByIds" resultType="com.example.heartbeatserver.entity.EsLabel">
+        select labelId, labelLevel, labelName, labelIcon, parentId from label_new
+        where labelID in (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <!--    GiftLabelsIds getLabelsIds(Integer third);-->
+    <select id="getLabelsIds" resultMap="LabelIdsMap">
+        select labelID, parentId from label_new
+        where labelID in (
+            select parentId from label_new
+            where labelID = #{third}
+        )
+    </select>
+
+    <!--    Gift getGiftById(Integer giftId);-->
+    <select id="getGiftById" resultType="com.example.heartbeatserver.entity.Gift">
+        select * from gift
+        where isDeleted = 0 and giftId = #{giftId}
+    </select>
+</mapper>

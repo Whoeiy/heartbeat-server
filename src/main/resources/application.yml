@@ -27,6 +27,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  elasticsearch:
+    uris: http://localhost:9200
 
 
 # jwt配置
@@ -34,5 +36,12 @@ jwt:
   config:
     secret: heartbeat
     ttl: 30000
+
+# pagehelper
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countsql
 
 

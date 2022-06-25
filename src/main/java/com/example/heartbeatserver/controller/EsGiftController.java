@@ -26,9 +26,9 @@ public class EsGiftController {
     }
 
     @GetMapping("/search")
-    public List<EsGift> search(@RequestParam String keyword) {
+    public Result<List<EsGift>> search(@RequestParam String keyword) {
         PageParam pageParam = new PageParam(1,10);
         List<EsGift> esGiftList = esGiftService.simpleSearch(keyword, pageParam);
-        return esGiftList;
+        return ResultGenerator.genSuccessResultData(esGiftList);
     }
 }

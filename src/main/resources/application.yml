@@ -28,7 +28,8 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
   elasticsearch:
-    uris: http://localhost:9200
+#    uris: http://localhost:9200
+    uris: http://101.133.131.175:9200
 
 
 # jwt配置

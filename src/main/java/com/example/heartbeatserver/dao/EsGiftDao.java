@@ -1,9 +1,6 @@
 package com.example.heartbeatserver.dao;
 
-import com.example.heartbeatserver.entity.EsCategory;
-import com.example.heartbeatserver.entity.EsGift;
-import com.example.heartbeatserver.entity.EsLabel;
-import com.example.heartbeatserver.entity.Gift;
+import com.example.heartbeatserver.entity.*;
 import com.example.heartbeatserver.service.pojo.GiftCategoryIds;
 import com.example.heartbeatserver.service.pojo.GiftLabelsIds;
 import org.apache.ibatis.annotations.Mapper;
@@ -31,6 +28,9 @@ public interface EsGiftDao {
 
     // 根据id查询礼物信息
     Gift getGiftById(Integer giftId);
+
+    // 查询礼物描述信息(for cart)
+    List<CartGiftDes> getGiftDes();
 
 
 }

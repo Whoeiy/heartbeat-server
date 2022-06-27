@@ -32,9 +32,11 @@ spring:
       repositories:
         enabled: true
   elasticsearch:
-#    uris: http://localhost:9200
-    uris: http://101.133.131.175:9200
-
+    uris: http://localhost:9200
+  redis:
+    host: 101.133.131.175
+    port: 6379
+    password: SuperGift123
 
 # jwt配置
 jwt:

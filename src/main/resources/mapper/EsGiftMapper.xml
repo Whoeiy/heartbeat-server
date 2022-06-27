@@ -84,4 +84,10 @@
         select * from gift
         where isDeleted = 0 and giftId = #{giftId}
     </select>
+
+    <!-- List<CartGiftDes> getGiftDes(); -->
+    <select id="getGiftDes" resultType="com.example.heartbeatserver.entity.CartGiftDes">
+        select giftId, giftName, imgUrl from gift
+        where isDeleted = 0
+    </select>
 </mapper>

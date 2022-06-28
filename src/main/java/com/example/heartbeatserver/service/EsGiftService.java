@@ -21,5 +21,8 @@ public interface EsGiftService {
     // 综合搜索
     List<EsGift> sortSearch(String keyword, PageParam pageParam);
 
+    // 根据giftId查询礼物详情
+    EsGift getGiftDetailById(Integer giftId);
+
 
 }

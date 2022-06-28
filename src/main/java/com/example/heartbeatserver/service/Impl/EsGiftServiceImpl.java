@@ -132,4 +132,18 @@ public class EsGiftServiceImpl implements EsGiftService {
     public List<EsGift> sortSearch(String keyword, PageParam pageParam) {
         return null;
     }
+
+    @Override
+    public EsGift getGiftDetailById(Integer giftId) {
+        Gift gift = this.esGiftDao.getGiftById(giftId);
+        List<EsCategory> esCategories = new ArrayList<>();
+        List<List<EsLabel>> esLabels = new ArrayList<>();
+        EsGift esGift = new EsGift();
+        BeanUtil.copyProperties(gift, esGift);
+        esCategories = this.getGiftCategories(gift);
+        esLabels = this.getGiftLabels(gift);
+        esGift.setGiftCategory(esCategories);
+        esGift.setGiftLabelList(esLabels);
+        return esGift;
+    }
 }

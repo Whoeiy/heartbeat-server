@@ -18,4 +18,11 @@ public interface CartService {
     // 更新礼物描述缓存信息
     String updateGiftDesRedis();
 
+    // 删除购物车中的礼物
+    String deleteGiftInCart(Integer customerId, Integer giftId);
+
+
+    // 购买生成订单
+     String buyCart(Integer customerId, Integer[] giftIds, Integer addressId);
+
 }

@@ -46,4 +46,14 @@ public class CartController {
         }
         return ResultGenerator.genFailResult(null);
     }
+
+    @DeleteMapping
+    @ApiOperation("/删除购物车中的礼物")
+    public Result<String> deleteGiftInCart(@RequestParam Integer giftId, Integer customerId) {
+        String res = this.cartService.deleteGiftInCart(customerId, giftId);
+        if (res.equals(CartEnum.CART_DEL_GIFT_SUCCESS)) {
+            return ResultGenerator.genSuccessResult(res);
+        }
+        return ResultGenerator.genFailResult(res);
+    }
 }

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.dao.AddressDao">
+
+
+    <resultMap id="AddressResultMap" type="com.example.heartbeatserver.controller.vo.AddressVo">
+        <result column="addressId" jdbcType="INTEGER" property="addressId"/>
+        <result column="customerId" jdbcType="INTEGER" property="customerId"/>
+        <result column="customerName" jdbcType="VARCHAR" property="customerName"/>
+        <result column="customerPhone" jdbcType="VARCHAR" property="customerPhone"/>
+        <result column="provinceName" jdbcType="VARCHAR" property="provinceName"/>
+        <result column="cityName" jdbcType="VARCHAR" property="cityName"/>
+        <result column="regionName" jdbcType="VARCHAR" property="regionName"/>
+        <result column="detailAddress" jdbcType="VARCHAR" property="detailAddress"/>
+        <result column="defaultFlag" jdbcType="INTEGER" property="defaultFlag"/>
+    </resultMap>
+
+    <sql id="AddressVoColumns">
+        addressId, customerId, customerName, customerPhone, provinceName,
+        cityName, regionName, detailAddress, defaultFlag
+    </sql>
+
+<!--    Address getDefaultAddress();-->
+    <select id="getDefaultAddressId" resultType="INTEGER" >
+        select addressId from mall_address
+        where isDeleted = 0 and defaultFlag = 1
+    </select>
+<!--    Address getAddress(Integer addressId);-->
+    <select id="getAddress" parameterType="INTEGER" resultType="com.example.heartbeatserver.entity.Address">
+        select * from mall_address
+        where isDeleted = 0 and addressId = #{addressId}
+    </select>
+
+<!--    List<Address> getAddressList(Integer customerId);-->
+    <select id="getAddressList" parameterType="INTEGER" resultMap="AddressResultMap">
+        select <include refid="AddressVoColumns"></include>
+        from mall_address
+        where isDeleted = 0 and customerId = #{customerId}
+        order by defaultFlag desc, addressId desc
+    </select>
+
+    <!--    Integer addNewAddress(Address address);-->
+    <insert id="addNewAddress" parameterType="com.example.heartbeatserver.entity.Address">
+        insert into mall_address
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="customerId != null">
+                customerId,
+            </if>
+            <if test="customerName != null">
+                customerName,
+            </if>
+            <if test="customerPhone != null">
+                customerPhone,
+            </if>
+            <if test="provinceName != null">
+                provinceName,
+            </if>
+            <if test="cityName != null">
+                cityName,
+            </if>
+            <if test="regionName != null">
+                regionName,
+            </if>
+            <if test="detailAddress != null">
+                detailAddress,
+            </if>
+            <if test="defaultFlag != null">
+                defaultFlag,
+            </if>
+            <if test="isDeleted != null">
+                isDeleted,
+            </if>
+            createTime,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <!--            <if test="vendorId != null">-->
+            <!--                #{vendorId, jdbcType=INTEGER},-->
+            <!--            </if>-->
+            <if test="customerId != null">
+                #{customerId, jdbcType=INTEGER},
+            </if>
+            <if test="customerName != null">
+                #{customerName, jdbcType=VARCHAR},
+            </if>
+            <if test="customerPhone != null">
+                #{customerPhone, jdbcType=VARCHAR},
+            </if>
+            <if test="provinceName != null">
+                #{provinceName, jdbcType=VARCHAR},
+            </if>
+            <if test="cityName != null">
+                #{cityName, jdbcType=VARCHAR},
+            </if>
+            <if test="regionName != null">
+                #{regionName, jdbcType=VARCHAR},
+            </if>
+            <if test="detailAddress != null">
+                #{detailAddress, jdbcType=VARCHAR},
+            </if>
+            <if test="defaultFlag != null">
+                #{defaultFlag, jdbcType=INTEGER},
+            </if>
+            <if test="isDeleted != null">
+                #{isDeleted, jdbcType=INTEGER},
+            </if>
+            now(),
+        </trim>
+    </insert>
+
+<!--    Integer updateAddress(Address address);-->
+    <update id="updateAddress" parameterType="com.example.heartbeatserver.entity.Address">
+        update mall_address
+        <set>
+            <if test="customerName != null">
+                customerName = #{customerName, jdbcType=VARCHAR},
+            </if>
+            <if test="customerPhone != null">
+                customerPhone = #{customerPhone, jdbcType=VARCHAR},
+            </if>
+            <if test="provinceName != null">
+                provinceName = #{provinceName, jdbcType=VARCHAR},
+            </if>
+            <if test="cityName != null">
+                cityName = #{cityName, jdbcType=VARCHAR},
+            </if>
+            <if test="regionName != null">
+                regionName = #{regionName, jdbcType=VARCHAR},
+            </if>
+            <if test="detailAddress != null">
+                detailAddress = #{detailAddress, jdbcType=VARCHAR},
+            </if>
+            <if test="defaultFlag != null">
+                defaultFlag = #{defaultFlag, jdbcType=INTEGER},
+            </if>
+            <if test="isDeleted != null">
+                isDeleted = #{isDeleted, jdbcType=INTEGER},
+            </if>
+            updateTime = now(),
+        </set>
+        where addressId = #{addressId, jdbcType=INTEGER}
+    </update>
+
+<!--    Integer updateDefaultAddressFlag(Integer addressId);-->
+    <update id="updateDefaultAddressFlag">
+        update mall_address
+        set defaultFlag = 0, updateTime = now()
+        where addressId = #{addressId}
+    </update>
+
+<!--    Integer delAddress(Integer addressId);-->
+    <update id="delAddress">
+        update mall_address
+        set isDeleted = 1, updateTime = now()
+        where addressId = #{addressId}
+    </update>
+</mapper>

@@ -10,6 +10,10 @@ public enum CartEnum {
 
     UPDATE_GIFT_DES_IN_REDIS_SUCCESS("Gift description is update-to-date"),
 
+    CART_NOT_EXISTS("该用户未创建购物车"),
+
+    CART_DEL_GIFT_SUCCESS("删除礼物成功"),
+
     ;
 
 

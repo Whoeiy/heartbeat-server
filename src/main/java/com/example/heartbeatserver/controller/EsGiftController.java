@@ -33,8 +33,8 @@ public class EsGiftController {
         return ResultGenerator.genSuccessResultData(esGiftList);
     }
 
-    @GetMapping("/gift/detail")
-    public Result<EsGift> getGiftDetail(@RequestParam Integer giftId) {
+    @GetMapping("/gift/detail/{giftId}")
+    public Result<EsGift> getGiftDetail(@PathVariable Integer giftId) {
         EsGift esGift = this.esGiftService.getGiftDetailById(giftId);
         if (esGift != null) {
             return ResultGenerator.genSuccessResultData(esGift);

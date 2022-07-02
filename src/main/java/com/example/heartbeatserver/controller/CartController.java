@@ -41,7 +41,7 @@ public class CartController {
     @ApiOperation("/更新redis礼物描述信息")
     public Result<String> updateGiftDes(){
         String res = this.cartService.updateGiftDesRedis();
-        if (res.equals(CartEnum.UPDATE_GIFT_DES_IN_REDIS_SUCCESS.getMessage())){
+        if (res.equals(CartEnum.CART_DEL_GIFT_SUCCESS.getMessage())){
             return ResultGenerator.genSuccessResult(res);
         }
         return ResultGenerator.genFailResult(null);
@@ -51,7 +51,7 @@ public class CartController {
     @ApiOperation("/删除购物车中的礼物")
     public Result<String> deleteGiftInCart(@RequestParam Integer giftId, Integer customerId) {
         String res = this.cartService.deleteGiftInCart(customerId, giftId);
-        if (res.equals(CartEnum.CART_DEL_GIFT_SUCCESS)) {
+        if (res.equals(CartEnum.CART_DEL_GIFT_SUCCESS.getMessage())) {
             return ResultGenerator.genSuccessResult(res);
         }
         return ResultGenerator.genFailResult(res);

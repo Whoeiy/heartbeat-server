@@ -13,7 +13,7 @@ public interface AddressDao {
     Integer addNewAddress(Address address);
 
     // 查询默认地址Id
-    Integer getDefaultAddressId();
+    Integer getDefaultAddressId(Integer customerId);
 
     // 更新默认地址为非默认地址
     Integer updateDefaultAddressFlag(Integer addressId);
@@ -29,6 +29,9 @@ public interface AddressDao {
 
     // 删除地址
     Integer delAddress(Integer addressId);
+
+    // 获取默认地址
+    AddressVo getDefaultAddress(Integer customerId);
 
 
 }

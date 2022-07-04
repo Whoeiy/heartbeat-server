@@ -22,5 +22,8 @@ public interface AddressService {
     // 删除地址
     String delAddress(Integer addressId);
 
+    // 查询默认地址
+    AddressVo getDefaultAddressById(Integer customerId);
+
 
 }

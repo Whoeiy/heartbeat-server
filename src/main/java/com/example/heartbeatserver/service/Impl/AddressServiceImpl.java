@@ -21,7 +21,7 @@ public class AddressServiceImpl implements AddressService {
     public String addNewAddress(Address address) {
         // 判断该地址是否要设为默认地址
         if (address.getDefaultFlag() == 1) {
-            Integer defaultAdrId = this.addressDao.getDefaultAddressId();
+            Integer defaultAdrId = this.addressDao.getDefaultAddressId(address.getCustomerId());
             if (defaultAdrId != null) {
                 // 默认地址已存在, 更新原默认地址defaultFlag = 0
                 this.addressDao.updateDefaultAddressFlag(defaultAdrId);
@@ -46,7 +46,7 @@ public class AddressServiceImpl implements AddressService {
         }
         // 地址状态由非默认地址更新为默认地址
         if (adr.getDefaultFlag() == 0 && address.getDefaultFlag() == 1) {
-            Integer defaultAdrId = this.addressDao.getDefaultAddressId();
+            Integer defaultAdrId = this.addressDao.getDefaultAddressId(address.getCustomerId());
             if (defaultAdrId != null) {
                 // 默认地址已存在, 更新原默认地址defaultFlag = 0
                 this.addressDao.updateDefaultAddressFlag(defaultAdrId);
@@ -73,5 +73,10 @@ public class AddressServiceImpl implements AddressService {
             return ServiceResultEnum.SUCCESS.getResult();
         }
         return ServiceResultEnum.DB_ERROR.getResult();
+    }
+
+    @Override
+    public AddressVo getDefaultAddressById(Integer customerId) {
+        return this.addressDao.getDefaultAddress(customerId);
     }
 }

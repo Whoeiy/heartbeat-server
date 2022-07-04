@@ -22,10 +22,11 @@
         cityName, regionName, detailAddress, defaultFlag
     </sql>
 
-<!--    Address getDefaultAddress();-->
+<!--    Address getDefaultAddress(Integer customerId);-->
     <select id="getDefaultAddressId" resultType="INTEGER" >
         select addressId from mall_address
-        where isDeleted = 0 and defaultFlag = 1
+        where isDeleted = 0 and customerId = #{customerId}
+        and defaultFlag = 1
     </select>
 <!--    Address getAddress(Integer addressId);-->
     <select id="getAddress" parameterType="INTEGER" resultType="com.example.heartbeatserver.entity.Address">
@@ -39,6 +40,15 @@
         from mall_address
         where isDeleted = 0 and customerId = #{customerId}
         order by defaultFlag desc, addressId desc
+    </select>
+
+<!--    Address getDefaultAddress(Integer customerId);-->
+    <select id="getDefaultAddress" resultType="com.example.heartbeatserver.controller.vo.AddressVo">
+        select <include refid="AddressVoColumns"></include>
+        from mall_address
+        where isDeleted = 0 and customerId = #{customerId}
+        order by defaultFlag desc, addressId desc
+        limit 1
     </select>
 
     <!--    Integer addNewAddress(Address address);-->

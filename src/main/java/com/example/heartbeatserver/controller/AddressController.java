@@ -81,4 +81,14 @@ public class AddressController {
         }
         return ResultGenerator.genFailResult(res);
     }
+
+    @GetMapping("/default")
+    @ApiOperation("/查询默认地址")
+    public Result<AddressVo> getDefaultAddress(Integer customerId) {
+        AddressVo addressVo = this.addressService.getDefaultAddressById(customerId);
+        if (addressVo != null) {
+            return ResultGenerator.genSuccessResultData(addressVo);
+        }
+        return ResultGenerator.genFailResult(ServiceResultEnum.DB_ERROR.getResult());
+    }
 }

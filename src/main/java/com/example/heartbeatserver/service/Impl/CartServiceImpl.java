@@ -12,6 +12,8 @@ import com.example.heartbeatserver.entity.CartGiftDes;
 import com.example.heartbeatserver.entity.CartItem;
 import com.example.heartbeatserver.entity.Gift;
 import com.example.heartbeatserver.service.CartService;
+import com.example.heartbeatserver.util.PageParam;
+import com.example.heartbeatserver.util.PageResult;
 import com.example.heartbeatserver.util.PublicData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -35,24 +37,28 @@ public class CartServiceImpl implements CartService {
         Cart cart = showCart(customerId);
 
         if (cart == null) {
+            // 该用户没有购物车
             cart = new Cart();
-            CartItem cartItem = new CartItem(param.getGiftId(), param.getPrice(), param.getCount());
+            CartItem cartItem = new CartItem(param.getGiftId(), param.getPrice(), null, param.getCount());
             List<CartItem> cartItemList = new ArrayList<>();
             cart.setCustomerId(customerId);
             cartItemList.add(cartItem);
             cart.setCartItemList(cartItemList);
         } else {
+            // 该用户有购物车
             List<CartItem> cartItemList = cart.getCartItemList();
             boolean isExisted = false;
-            for (int i = 0; i <cartItemList.size(); i++) {
+            for (int i = 0; i < cartItemList.size(); i++) {
               if (cartItemList.get(i).getGiftId() == param.getGiftId()) {
+                  // 若该礼物已加入购物车，增加该礼物的数量
                  cartItemList.get(i).setCount(cartItemList.get(i).getCount() + 1);
                  isExisted = true;
                  break;
               }
             }
             if (!isExisted) {
-                CartItem cartItem = new CartItem(param.getGiftId(), param.getPrice(), param.getCount());
+                // 若该礼物未加入购物车
+                CartItem cartItem = new CartItem(param.getGiftId(), param.getPrice(), null, param.getCount());
                 cart.getCartItemList().add(cartItem);
             }
         }
@@ -154,7 +160,64 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public String buyCart(Integer customerId, Integer[] giftIds, Integer addressId) {
+    public CartVo settle(Integer customerId, Integer[] giftIds) {
+        // 查询该用户是否存在购物车
+        Cart oldCart = showCart(customerId);
+        if (oldCart == null) {
+            return null;
+        }
+        // 声明要购买的购物车信息
+        Cart buyCart = new Cart();
+        buyCart.setCustomerId(customerId);
+        buyCart.setCartItemList(new ArrayList<>());
+
+        CartVo buyCartVo = new CartVo();
+        buyCartVo.setCustomerId(customerId);
+
+        // 遍历礼物列表, 生成要购买礼物列表
+        List<CartItem> cartItemList = oldCart.getCartItemList();
+
+        for(CartItem cartItem : cartItemList) {
+            for (int i = 0; i < giftIds.length; i++) {
+                if (cartItem.getGiftId() == giftIds[i]) {
+                    buyCart.getCartItemList().add(cartItem);
+                    break;
+                }
+            }
+        }
+
+        List<CartItemVo> cartItemVoList = new ArrayList<>();
+
+        Double sum = 0.00;
+        for (CartItem cartItem : buyCart.getCartItemList()) {
+            String itemName = PublicData.GIFT_DES_REDIS_ITEM_NAME + cartItem.getGiftId();
+            Object obj = redisTemplate.opsForHash().get(PublicData.GIFT_DES_REDIS_KEY, itemName);
+            if (obj != null) {
+                CartGiftDes cartGiftDes = JSON.parseObject(obj.toString(), CartGiftDes.class);
+                CartItemVo cartItemVo = new CartItemVo();
+                cartItemVo.setGiftId(cartItem.getGiftId());
+                cartItemVo.setCount(cartItem.getCount());
+                cartItemVo.setPrice(cartItem.getPrice());
+                cartItemVo.setGiftImg(cartGiftDes.getImgUrl());
+                cartItemVo.setGiftName(cartGiftDes.getGiftName());
+                cartItemVo.setService(cartItem.getService());
+                // 计算小计金额
+                Double itemPrice = cartItem.getPrice() * cartItem.getCount();
+                cartItemVo.setSellingPrice(itemPrice);
+
+                cartItemVoList.add(cartItemVo);
+                sum += itemPrice;
+            }
+        }
+        buyCartVo.setCartItems(cartItemVoList);
+        buyCartVo.setTotalPrice(sum);
+
+        return buyCartVo;
+    }
+
+
+    @Override
+    public String saveOrder(Integer customerId, Integer[] giftIds, Integer addressId) {
         // 查询该用户是否存在购物车
         Cart oldCart = showCart(customerId);
         if (oldCart == null) {
@@ -171,6 +234,23 @@ public class CartServiceImpl implements CartService {
 
         // 遍历礼物列表
         List<CartItem> cartItemList = oldCart.getCartItemList();
+
+        for(CartItem cartItem : cartItemList) {
+            int i = 0;
+            for (; i < giftIds.length; i++) {
+                if (cartItem.getGiftId() == giftIds[i]) {
+                    buyCart.getCartItemList().add(cartItem);
+                    break;
+                }
+            }
+            // 如果正常退出循环，说明该cartItem需要存入redis
+            if (i >= giftIds.length) {
+                saveCart.getCartItemList().add(cartItem);
+            }
+        }
+
+
+
         for (Integer giftId : giftIds) {
             for (CartItem cartItem : cartItemList) {
                 if (cartItem.getGiftId() == giftId) {

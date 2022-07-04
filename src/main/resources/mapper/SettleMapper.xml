@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.dao.SettleDao">
+    
+    <resultMap id="ServiceResultMap" type="com.example.heartbeatserver.entity.CustomerService">
+        <id column="serviceId" jdbcType="INTEGER" property="serviceId"/>
+        <result column="serviceName" jdbcType="VARCHAR" property="serviceName"/>
+        <result column="sampleImg" jdbcType="VARCHAR" property="sampleImg"/>
+        <result column="serviceType" jdbcType="INTEGER" property="serviceType"/>
+        <result column="showRank" jdbcType="INTEGER" property="showRank"/>
+        <result column="isShown" jdbcType="INTEGER" property="isShown"/>
+        <result column="vendorId" jdbcType="INTEGER" property="vendorId"/>
+        <result column="isDeleted" jdbcType="INTEGER" property="isDeleted"/>
+    </resultMap>
+
+<!--    List<CustomerService> getServiceList(Integer giftId);-->
+    <select id="getServiceList" resultMap="ServiceResultMap">
+        select * from gift_custom_service
+        where isDeleted = 0 and isShown = 1 and vendorId = (
+            select vendorId from gift
+            where giftId = #{giftId}
+        )
+        order by serviceType asc, showRank desc, serviceId asc
+    </select>
+</mapper>

@@ -28,8 +28,7 @@ public class SettleController {
 
     @GetMapping("/settle")
     @ApiOperation("/查询生成订单列表")
-    public Result<CartVo> settle(@RequestBody GiftIdListParam param, Integer customerId) {
-        String giftIdList = param.getGiftIdList();
+    public Result<CartVo> settle(@RequestParam String giftIdList, Integer customerId) {
         String[] ids_str  = giftIdList.split(",");
         Integer[] ids = new Integer[ids_str.length];
 

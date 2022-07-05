@@ -1,7 +1,7 @@
 package com.example.heartbeatserver.controller;
 
 import com.example.heartbeatserver.common.ServiceResultEnum;
-import com.example.heartbeatserver.controller.param.GiftIdListParam;
+import com.example.heartbeatserver.controller.param.GiftServiceParam;
 import com.example.heartbeatserver.controller.vo.CartVo;
 import com.example.heartbeatserver.controller.vo.NormalServiceVo;
 import com.example.heartbeatserver.service.Impl.CartServiceImpl;
@@ -51,6 +51,16 @@ public class SettleController {
             return ResultGenerator.genSuccessResultData(normalServiceVoList);
         }
         return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
+    }
+
+    @PutMapping("/settle")
+    @ApiOperation("/更新购物车中的礼物定制信息")
+    public Result<String> updateSettleCartItemService(@RequestBody GiftServiceParam param, Integer customerId) {
+        String res = this.settleService.updateSettleService(param, customerId);
+        if (res.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            return ResultGenerator.genSuccessResult();
+        }
+        return ResultGenerator.genFailResult(res);
     }
 
 }

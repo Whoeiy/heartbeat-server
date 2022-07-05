@@ -9,4 +9,6 @@ import java.util.List;
 public interface SettleDao {
 
     List<CustomerService> getServiceList(Integer giftId);
+
+    CustomerService getService(Integer serviceId);
 }

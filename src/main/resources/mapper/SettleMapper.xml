@@ -24,4 +24,10 @@
         )
         order by serviceType asc, showRank desc, serviceId asc
     </select>
+
+<!--    CustomerService getService(Integer serviceId);-->
+    <select id="getService" resultType="com.example.heartbeatserver.entity.CustomerService">
+        select * from gift_custom_service
+        where isDeleted = 0 and isShown = 1 and serviceId = #{serviceId}
+    </select>
 </mapper>

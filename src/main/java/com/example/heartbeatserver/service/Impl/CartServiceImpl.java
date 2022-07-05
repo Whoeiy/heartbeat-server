@@ -200,7 +200,7 @@ public class CartServiceImpl implements CartService {
                 cartItemVo.setPrice(cartItem.getPrice());
                 cartItemVo.setGiftImg(cartGiftDes.getImgUrl());
                 cartItemVo.setGiftName(cartGiftDes.getGiftName());
-                cartItemVo.setService(cartItem.getService());
+                cartItemVo.setService(JSON.parseObject(cartItem.getService()));
                 // 计算小计金额
                 Double itemPrice = cartItem.getPrice() * cartItem.getCount();
                 cartItemVo.setSellingPrice(itemPrice);

@@ -16,7 +16,7 @@ public class CartItem implements Serializable {
 
     private Double price;
 
-    private JSONObject service;
+    private String service;
 
     private Integer count;
 }

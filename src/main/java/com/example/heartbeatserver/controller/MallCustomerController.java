@@ -37,13 +37,20 @@ public class MallCustomerController {
     }
 
     @PutMapping("/info")
-    public Result updateCustomerInfor(Integer customerId, @RequestBody InfoParam infoParam){
-       String pass1 = infoParam.getOrgPasswordMd5();
-       MallCustomer mallCustomer = mallCustomerService.getById(customerId);
-       String pass2 = mallCustomer.getPasswordmd5();
+    public Result updateCustomerInfo(Integer customerId, @RequestBody InfoParam infoParam){
+        MallCustomer mallCustomer = mallCustomerService.getById(customerId);
+        String pass1 = infoParam.getOrgPasswordMd5();
+        String pass2 = mallCustomer.getPasswordmd5();
+        String newPassword = infoParam.getNewPassword();
+
+        if(pass1 == null) {
+            pass1 = mallCustomer.getPasswordmd5();
+            pass2 = mallCustomer.getPasswordmd5();
+            newPassword = mallCustomer.getPasswordmd5();
+        }
 
        if(pass1.equals(pass2) ){
-           mallCustomer.setPasswordmd5(infoParam.getNewPassword());
+           mallCustomer.setPasswordmd5(newPassword);
            mallCustomer.setCustomername(infoParam.getCustomerName());
            mallCustomer.setEmail(infoParam.getEmail());
            mallCustomer.setUpdatetime(new Date());

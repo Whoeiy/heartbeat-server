@@ -1,9 +1,11 @@
 package com.example.heartbeatserver;
 
 import com.example.heartbeatserver.controller.param.AddGiftIntoCartParam;
+import com.example.heartbeatserver.dao.AddressDao;
 import com.example.heartbeatserver.service.Impl.CartServiceImpl;
 import com.example.heartbeatserver.service.Impl.EsGiftServiceImpl;
 import com.example.heartbeatserver.service.Impl.IndexInfoServiceImpl;
+import com.example.heartbeatserver.service.Impl.SettleServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -58,6 +60,33 @@ class HeartbeatServerApplicationTests {
     @Test
     void testUpdateGiftDes(){
         System.out.println(this.cartService.updateGiftDesRedis());
+    }
+
+    @Test
+    void testDelGift() {
+        System.out.println(this.cartService.deleteGiftInCart(2,18));
+    }
+
+    @Test
+    void testGetGiftDetail() {
+        System.out.println(this.esGiftService.getGiftDetailById(17));
+    }
+
+    @Autowired
+    private AddressDao addressDao;
+
+    @Test
+    void testAddressDao() {
+//        System.out.println(this.addressDao.getDefaultAddressId(2));
+        System.out.println(this.addressDao.getDefaultAddress(3));
+    }
+
+    @Autowired
+    private SettleServiceImpl settleService;
+
+    @Test
+    void testService(){
+        System.out.println(this.settleService.getNormalServiceList(33));
     }
 
 

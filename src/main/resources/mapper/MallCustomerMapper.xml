@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.dao.MallCustomerMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.heartbeatserver.entity.MallCustomer">
+            <id property="customerid" column="customerId" jdbcType="INTEGER"/>
+            <result property="customername" column="customerName" jdbcType="VARCHAR"/>
+            <result property="passwordmd5" column="passwordMd5" jdbcType="VARCHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="email" column="email" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="createtime" column="createTime" jdbcType="TIMESTAMP"/>
+            <result property="updatetime" column="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        customerId,customerName,passwordMd5,
+        phone,email,address,
+        createTime,updateTime
+    </sql>
+</mapper>

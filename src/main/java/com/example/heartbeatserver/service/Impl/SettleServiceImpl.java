@@ -109,12 +109,15 @@ public class SettleServiceImpl implements SettleService {
             serviceInfo.setServiceNote(param.getServiceNote());
         } else if (chosenType == 3) {
             // 私人定制
+            if (param.getServiceNote() == null) {
+                return ServiceResultEnum.DATA_NOT_EXIST.getResult() + " - 私人定制服务内容不能为空";
+            }
             serviceInfo.setServiceChosenType(chosenType);
             serviceInfo.setServiceChosenTypeName(this.getChosenServiceMap().get(chosenType));
             serviceInfo.setServiceNote(param.getServiceNote());
             serviceInfo.setPhone(param.getPhone());
         } else {
-            return ServiceResultEnum.DATA_NOT_EXIST.getResult() + " - 该类普通服务不存在";
+            return ServiceResultEnum.DATA_NOT_EXIST.getResult() + " - 该类定制服务不存在";
         }
 
         List<CartItem> cartItemList = cart.getCartItemList();

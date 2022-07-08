@@ -62,5 +62,4 @@ public class SettleController {
         }
         return ResultGenerator.genFailResult(res);
     }
-
 }

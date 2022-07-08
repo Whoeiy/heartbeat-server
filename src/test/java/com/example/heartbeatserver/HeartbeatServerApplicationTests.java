@@ -2,10 +2,7 @@ package com.example.heartbeatserver;
 
 import com.example.heartbeatserver.controller.param.AddGiftIntoCartParam;
 import com.example.heartbeatserver.dao.AddressDao;
-import com.example.heartbeatserver.service.Impl.CartServiceImpl;
-import com.example.heartbeatserver.service.Impl.EsGiftServiceImpl;
-import com.example.heartbeatserver.service.Impl.IndexInfoServiceImpl;
-import com.example.heartbeatserver.service.Impl.SettleServiceImpl;
+import com.example.heartbeatserver.service.Impl.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -87,6 +84,14 @@ class HeartbeatServerApplicationTests {
     @Test
     void testService(){
         System.out.println(this.settleService.getNormalServiceList(33));
+    }
+
+    @Autowired
+    private OrderServiceImpl orderService;
+
+    @Test
+    void testOrderNo() {
+        System.out.println(this.orderService.generateOrderNo());
     }
 
 

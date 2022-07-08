@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.dao.OrderDao">
+    <sql id="insertOrderItemCols">
+        giftId,orderNo,giftName,giftCount,
+        giftImg,giftPrice,sellingPrice,service
+    </sql>
+
+
+<!--    Integer insertOrder(Order order);-->
+    <insert id="insertOrder" parameterType="com.example.heartbeatserver.entity.Order">
+        insert into mall_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                orderNo,
+            </if>
+            <if test="customerId != null">
+                customerId,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="orderType != null">
+                orderType,
+            </if>
+            <if test="orderStatus != null">
+                orderStatus,
+            </if>
+            <if test="payStatus != null">
+                payStatus,
+            </if>
+            <if test="payType != null">
+                payType,
+            </if>
+            <if test="payTime != null">
+                payTime,
+            </if>
+            <if test="totalPrice != null">
+                totalPrice,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderNo != null">
+                #{orderNo, jdbcType=VARCHAR},
+            </if>
+            <if test="customerId != null">
+                #{customerId, jdbcType=INTEGER},
+            </if>
+            <if test="address != null">
+                #{address, jdbcType=CLOB},
+            </if>
+            <if test="orderType != null">
+                #{orderType, jdbcType=INTEGER},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus, jdbcType=INTEGER},
+            </if>
+            <if test="payStatus != null">
+                #{payStatus, jdbcType=INTEGER},
+            </if>
+            <if test="payType != null">
+                #{payType, jdbcType=INTEGER},
+            </if>
+            <if test="payTime != null">
+                #{payTime, jdbcType=TIMESTAMP},
+            </if>
+            <if test="totalPrice != null">
+                #{totalPrice, jdbcType=DOUBLE},
+            </if>
+            <if test="createTime != null">
+                #{createTime, jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+<!--    Integer insertBatchOrderItem(List<OrderItem> orderItems);-->
+    <insert id="insertBatchOrderItem" parameterType="java.util.List">
+        insert into mall_orderItem
+        (<include refid="insertOrderItemCols"></include>)
+        values
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.giftId != null">
+                    #{item.giftId, jdbcType=INTEGER},
+                </if>
+                <if test="item.orderNo != null">
+                    #{item.orderNo, jdbcType=VARCHAR},
+                </if>
+                <if test="item.giftName != null">
+                    #{item.giftName, jdbcType=VARCHAR},
+                </if>
+                <if test="item.giftCount != null">
+                    #{item.giftCount, jdbcType=INTEGER},
+                </if>
+                <if test="item.giftImg != null">
+                    #{item.giftImg, jdbcType=CLOB},
+                </if>
+                <if test="item.giftPrice != null">
+                    #{item.giftPrice, jdbcType=DOUBLE},
+                </if>
+                <if test="item.sellingPrice != null">
+                    #{item.sellingPrice, jdbcType=DOUBLE},
+                </if>
+                <if test="item.service != null">
+                    #{item.service, jdbcType=CLOB},
+                </if>
+            </trim>
+        </foreach>
+    </insert>
+
+</mapper>

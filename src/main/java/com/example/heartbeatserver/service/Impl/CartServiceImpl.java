@@ -6,6 +6,7 @@ import com.example.heartbeatserver.common.ServiceResultEnum;
 import com.example.heartbeatserver.controller.param.AddGiftIntoCartParam;
 import com.example.heartbeatserver.controller.vo.CartItemVo;
 import com.example.heartbeatserver.controller.vo.CartVo;
+import com.example.heartbeatserver.dao.AddressDao;
 import com.example.heartbeatserver.dao.EsGiftDao;
 import com.example.heartbeatserver.entity.Cart;
 import com.example.heartbeatserver.entity.CartGiftDes;
@@ -30,6 +31,9 @@ public class CartServiceImpl implements CartService {
 
     @Autowired
     private EsGiftDao esGiftDao;
+
+    @Autowired
+    private OrderServiceImpl orderService;
 
     @Override
     public String addGiftIntoCart(Integer customerId, AddGiftIntoCartParam param) {
@@ -151,9 +155,9 @@ public class CartServiceImpl implements CartService {
         String itemName = PublicData.CART_REDIS_ITEM_NAME + customerId;
         // 判断购物车里是否还有礼物。如果没有，则删除购物车
         if (cart.getCartItemList().size() == 0) {
-            redisTemplate.opsForHash().delete(PublicData.CART_REDIS_KEY, itemName);
+            this.removeCart(customerId);
         } else {
-            redisTemplate.opsForHash().put(PublicData.CART_REDIS_KEY, itemName, JSON.toJSONString(cart));
+            this.updateCart(customerId, cart);
         }
 
         return CartEnum.CART_DEL_GIFT_SUCCESS.getMessage();
@@ -221,16 +225,17 @@ public class CartServiceImpl implements CartService {
         // 查询该用户是否存在购物车
         Cart oldCart = showCart(customerId);
         if (oldCart == null) {
-            return CartEnum
-                    .CART_NOT_EXISTS.getMessage();
+            return CartEnum.CART_NOT_EXISTS.getMessage();
         }
         // 声明要购买的购物车信息
         Cart buyCart = new Cart();
         buyCart.setCustomerId(customerId);
+        buyCart.setCartItemList(new ArrayList<>());
 
         // 声明要保存到redis里的购物车信息
         Cart saveCart = new Cart();
         saveCart.setCustomerId(customerId);
+        saveCart.setCartItemList(new ArrayList<>());
 
         // 遍历礼物列表
         List<CartItem> cartItemList = oldCart.getCartItemList();
@@ -249,16 +254,30 @@ public class CartServiceImpl implements CartService {
             }
         }
 
-
-
-        for (Integer giftId : giftIds) {
-            for (CartItem cartItem : cartItemList) {
-                if (cartItem.getGiftId() == giftId) {
-                    buyCart.getCartItemList().add(cartItem);
-                    break;
-                }
+        // 完成购买操作
+        String res = this.orderService.createOrder(buyCart, addressId);
+        if (res.equals(ServiceResultEnum.SUCCESS.getResult())){
+            // 创建订单成功
+            // 更新redis数据
+            // 当购物车里剩余商品信息为空时，表示购物车已被清空，需要清除当前用户的购物车
+            if(saveCart.getCartItemList().size() == 0) {
+                this.removeCart(customerId);
+            } else {
+                this.updateCart(customerId, saveCart);
             }
         }
-        return ServiceResultEnum.SUCCESS.getResult();
+        return res;
+    }
+
+    private void removeCart(Integer customerId) {
+        String itemName = PublicData.CART_REDIS_ITEM_NAME + customerId;
+        redisTemplate.opsForHash().delete(PublicData.CART_REDIS_KEY, itemName);
+        return;
+    }
+
+    private void updateCart(Integer customerId, Cart cart) {
+        String itemName = PublicData.CART_REDIS_ITEM_NAME + customerId;
+        redisTemplate.opsForHash().put(PublicData.CART_REDIS_KEY, itemName, JSON.toJSONString(cart));
+        return;
     }
 }

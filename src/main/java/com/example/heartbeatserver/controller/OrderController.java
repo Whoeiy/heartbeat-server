@@ -2,7 +2,11 @@ package com.example.heartbeatserver.controller;
 
 import com.example.heartbeatserver.common.ServiceResultEnum;
 import com.example.heartbeatserver.controller.param.SaveOrderParam;
+import com.example.heartbeatserver.controller.vo.OrderVo;
 import com.example.heartbeatserver.service.Impl.CartServiceImpl;
+import com.example.heartbeatserver.service.Impl.OrderServiceImpl;
+import com.example.heartbeatserver.util.PageParam;
+import com.example.heartbeatserver.util.PageResult;
 import com.example.heartbeatserver.util.Result;
 import com.example.heartbeatserver.util.ResultGenerator;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     @Autowired
     private CartServiceImpl cartService;
+
+    @Autowired
+    private OrderServiceImpl orderService;
 
     @PostMapping("/saveOrder")
     @ApiOperation("/生成订单")
@@ -32,5 +39,33 @@ public class OrderController {
             return ResultGenerator.genSuccessResult(res);
         }
         return ResultGenerator.genFailResult(res);
+    }
+
+    @PutMapping("/payOrder")
+    @ApiOperation("/更新订单支付信息和状态")
+    public Result<String> payOrder(@RequestParam String orderNo, @RequestParam Integer payType) {
+        String res = this.orderService.payOrder(orderNo, payType);
+        if (res.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            return ResultGenerator.genSuccessResult(res);
+        }
+        return ResultGenerator.genFailResult(res);
+    }
+
+    @GetMapping("/order/list")
+    @ApiOperation("/查询订单列表")
+    public Result<PageResult> getOrderList(Integer customerId, @RequestParam Integer pageNum, @RequestParam Integer pageSize, Integer orderStatus) {
+        PageParam param = new PageParam(pageNum, pageSize);
+        PageResult res = this.orderService.getOrderList(customerId, param, orderStatus);
+        return ResultGenerator.genSuccessResultData(res);
+    }
+
+    @GetMapping("/order/{orderNo}")
+    @ApiOperation("/查询订单详情")
+    public Result getOrderDetail(@PathVariable String orderNo) {
+        OrderVo orderVo = this.orderService.getOrderDetail(orderNo);
+        if (orderVo != null) {
+            return ResultGenerator.genSuccessResultData(orderVo);
+        }
+        return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
     }
 }

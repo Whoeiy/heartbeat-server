@@ -3,12 +3,69 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.heartbeatserver.dao.OrderDao">
+    <resultMap id="OrderResultMap" type="com.example.heartbeatserver.entity.Order">
+        <id column="orderNo" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="address" jdbcType="CLOB" property="address"/>
+        <result column="orderStatus" jdbcType="INTEGER" property="orderStatus"/>
+        <result column="payStatus" jdbcType="INTEGER" property="payStatus"/>
+        <result column="payType" jdbcType="INTEGER" property="payType"/>
+        <result column="payTime" jdbcType="TIMESTAMP" property="payTime"/>
+        <result column="totalPrice" jdbcType="DOUBLE" property="totalPrice"/>
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <resultMap id="OrderItemResultMap" type="com.example.heartbeatserver.entity.OrderItem">
+        <id column="orderItemId" jdbcType="INTEGER" property="orderItemId"/>
+        <result column="giftId" jdbcType="INTEGER" property="giftId"/>
+        <result column="giftName" jdbcType="VARCHAR" property="giftName"/>
+        <result column="giftCount" jdbcType="INTEGER" property="giftCount"/>
+        <result column="giftImg" jdbcType="CLOB" property="giftImg"/>
+        <result column="giftPrice" jdbcType="DOUBLE" property="giftPrice"/>
+        <result column="sellingPrice" jdbcType="DOUBLE" property="sellingPrice"/>
+        <result column="service" jdbcType="CLOB" property="service"/>
+    </resultMap>
+
     <sql id="insertOrderItemCols">
         giftId,orderNo,giftName,giftCount,
         giftImg,giftPrice,sellingPrice,service
     </sql>
 
+    <sql id="getOrderListCols">
+        orderNo,address,orderStatus,payStatus,payType,payTime,totalPrice,createTime
+    </sql>
 
+    <sql id="getOrderItemListCols">
+        orderItemId,giftId,giftName,giftCount,giftImg,giftPrice,sellingPrice,service
+    </sql>
+
+<!--    Order getOrderByNo(String orderNo);-->
+    <select id="getOrderByNo" resultType="com.example.heartbeatserver.entity.Order">
+        select * from mall_order
+        where orderNo = #{orderNo, jdbcType=VARCHAR}
+    </select>
+
+<!--    List<Order> getOrderList(Integer customerId, Integer orderStatus);-->
+    <select id="getOrderList" parameterType="INTEGER" resultMap="OrderResultMap">
+        select <include refid="getOrderListCols"></include>
+        from mall_order
+        <where>
+            <if test="customerId != null">
+                and customerId = #{customerId}
+            </if>
+            <if test="orderStatus != null and orderStatus != ''">
+                and orderStatus = #{orderStatus}
+            </if>
+        </where>
+        order by createTime desc
+    </select>
+
+<!--    List<OrderItem> getOrderItemList(String orderNo);-->
+    <select id="getOrderItemList" resultMap="OrderItemResultMap">
+        select <include refid="getOrderItemListCols"></include>
+        from mall_orderItem
+        where orderNo = #{orderNo}
+        order by orderItemId asc
+    </select>
 <!--    Integer insertOrder(Order order);-->
     <insert id="insertOrder" parameterType="com.example.heartbeatserver.entity.Order">
         insert into mall_order
@@ -112,4 +169,21 @@
         </foreach>
     </insert>
 
+
+<!--    Integer updateOrderPayInfo(OrderPayInfo info);-->
+    <update id="updateOrderPayInfo">
+        update mall_order
+        set payStatus = #{payStatus, jdbcType=INTEGER},
+            payType = #{payType, jdbcType=INTEGER},
+            payTime = #{payTime, jdbcType=TIMESTAMP}
+        where orderNo = #{orderNo, jdbcType=VARCHAR}
+    </update>
+
+<!--    Integer updateOrderStatus(String orderNo, Integer orderStatus);-->
+    <update id="updateOrderStatus">
+        update mall_order
+        set orderStatus = #{orderStatus, jdbcType=INTEGER},
+            updateTime = now()
+        where orderNo = #{orderNo, jdbcType=VARCHAR}
+    </update>
 </mapper>

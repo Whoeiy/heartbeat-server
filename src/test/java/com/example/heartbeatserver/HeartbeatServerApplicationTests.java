@@ -86,13 +86,6 @@ class HeartbeatServerApplicationTests {
         System.out.println(this.settleService.getNormalServiceList(33));
     }
 
-    @Autowired
-    private OrderServiceImpl orderService;
-
-    @Test
-    void testOrderNo() {
-        System.out.println(this.orderService.generateOrderNo());
-    }
 
 
 

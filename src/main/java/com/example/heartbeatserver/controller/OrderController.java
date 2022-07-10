@@ -35,8 +35,9 @@ public class OrderController {
         }
 
         String res  = this.cartService.saveOrder(customerId, ids, param.getAddressId());
-        if (res.equals(ServiceResultEnum.SUCCESS.getResult())) {
-            return ResultGenerator.genSuccessResult(res);
+        String[] resArr = res.split(",");
+        if (resArr[0].equals(ServiceResultEnum.SUCCESS.getResult())) {
+            return ResultGenerator.genSuccessResultData(resArr[1]);
         }
         return ResultGenerator.genFailResult(res);
     }

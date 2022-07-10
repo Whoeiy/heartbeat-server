@@ -103,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
         Integer resOrder = this.orderDao.insertOrder(order);
         Integer resOrderItem = this.orderDao.insertBatchOrderItem(orderItemList);
         if(resOrder > 0 && resOrderItem > 0) {
-            return ServiceResultEnum.SUCCESS.getResult();
+            return ServiceResultEnum.SUCCESS.getResult() + "," + order.getOrderNo();
         }
         return ServiceResultEnum.DB_ERROR.getResult();
     }

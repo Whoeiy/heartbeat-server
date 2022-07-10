@@ -254,9 +254,15 @@ public class CartServiceImpl implements CartService {
             }
         }
 
+        // 要购买的礼物不在购物车中
+        if (buyCart.getCartItemList().size() == 0) {
+            return ServiceResultEnum.DATA_NOT_EXIST.getResult() + " - 该礼物不在购物车中";
+        }
+
         // 完成购买操作
         String res = this.orderService.createOrder(buyCart, addressId);
-        if (res.equals(ServiceResultEnum.SUCCESS.getResult())){
+        String[] resArr = res.split(",");
+        if (resArr[0].equals(ServiceResultEnum.SUCCESS.getResult())){
             // 创建订单成功
             // 更新redis数据
             // 当购物车里剩余商品信息为空时，表示购物车已被清空，需要清除当前用户的购物车

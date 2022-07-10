@@ -26,8 +26,7 @@
     </resultMap>
 
     <sql id="insertOrderItemCols">
-        giftId,orderNo,giftName,giftCount,
-        giftImg,giftPrice,sellingPrice,service
+        giftId,orderNo,giftName,giftCount,giftImg,giftPrice,sellingPrice,service
     </sql>
 
     <sql id="getOrderListCols">

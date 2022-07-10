@@ -42,7 +42,7 @@ public class OrderController {
         return ResultGenerator.genFailResult(res);
     }
 
-    @PutMapping("/payOrder")
+    @GetMapping("/payOrder")
     @ApiOperation("/更新订单支付信息和状态")
     public Result<String> payOrder(@RequestParam String orderNo, @RequestParam Integer payType) {
         String res = this.orderService.payOrder(orderNo, payType);

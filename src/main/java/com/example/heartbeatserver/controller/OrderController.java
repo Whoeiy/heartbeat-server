@@ -69,4 +69,14 @@ public class OrderController {
         }
         return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
     }
+
+    @PutMapping("/order/{orderNo}/cancel")
+    @ApiOperation("/取消订单")
+    public Result<String> cancelOrder(@PathVariable String orderNo) {
+        String res = this.orderService.cancelOrder(orderNo);
+        if (res.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            return ResultGenerator.genSuccessResult(res);
+        }
+        return ResultGenerator.genFailResult(res);
+    }
 }

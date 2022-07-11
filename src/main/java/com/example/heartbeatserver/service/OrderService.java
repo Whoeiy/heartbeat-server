@@ -22,4 +22,7 @@ public interface OrderService {
 
     // 查询订单详情
     OrderVo getOrderDetail(String orderNo);
+
+    // 取消订单
+    String cancelOrder(String orderNo);
 }

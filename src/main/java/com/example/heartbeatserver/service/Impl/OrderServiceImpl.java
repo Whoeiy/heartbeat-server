@@ -39,10 +39,11 @@ public class OrderServiceImpl implements OrderService {
         serviceMap.put(0, "待支付");
         serviceMap.put(1, "待定制");
         serviceMap.put(2, "定制中");
-        serviceMap.put(3, "定制完成");
-        serviceMap.put(4, "待发货");
-        serviceMap.put(5, "已发货");
-        serviceMap.put(6, "交易完成");
+        serviceMap.put(3, "定制完成，待发货");
+        serviceMap.put(4, "已发货");
+        serviceMap.put(5, "交易完成");
+        serviceMap.put(6, "已关闭");
+        serviceMap.put(7, "已取消");
         return serviceMap;
     }
 
@@ -186,6 +187,18 @@ public class OrderServiceImpl implements OrderService {
         orderVo.setOrderItemList(this.getOrderItemVos(orderItemList));
 
         return orderVo;
+    }
+
+    @Override
+    public String cancelOrder(String orderNo) {
+        Order order = this.orderDao.getOrderByNo(orderNo);
+        if (order == null) {
+            return ServiceResultEnum.DATA_NOT_EXIST.getResult();
+        }
+        if (this.orderDao.updateOrderStatus(orderNo, 7) > 0) {
+            return ServiceResultEnum.SUCCESS.getResult();
+        }
+        return ServiceResultEnum.DB_ERROR.getResult();
     }
 
     private List<OrderItemVo> getOrderItemVos(List<OrderItem> orderItemList) {

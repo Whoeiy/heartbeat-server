@@ -25,4 +25,7 @@ public interface OrderService {
 
     // 取消订单
     String cancelOrder(String orderNo);
+
+    // 交易完成
+    String finishOrder(String orderNo);
 }

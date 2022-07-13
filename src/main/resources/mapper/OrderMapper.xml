@@ -51,7 +51,7 @@
             <if test="customerId != null">
                 and customerId = #{customerId}
             </if>
-            <if test="orderStatus != null and orderStatus != ''">
+            <if test="orderStatus != null">
                 and orderStatus = #{orderStatus}
             </if>
         </where>

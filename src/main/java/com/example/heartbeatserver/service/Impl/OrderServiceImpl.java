@@ -201,6 +201,18 @@ public class OrderServiceImpl implements OrderService {
         return ServiceResultEnum.DB_ERROR.getResult();
     }
 
+    @Override
+    public String finishOrder(String orderNo) {
+        Order order = this.orderDao.getOrderByNo(orderNo);
+        if (order == null) {
+            return ServiceResultEnum.DATA_NOT_EXIST.getResult();
+        }
+        if (this.orderDao.updateOrderStatus(orderNo, 5) > 0) {
+            return ServiceResultEnum.SUCCESS.getResult();
+        }
+        return ServiceResultEnum.DB_ERROR.getResult();
+    }
+
     private List<OrderItemVo> getOrderItemVos(List<OrderItem> orderItemList) {
         List<OrderItemVo> orderItemVos = new ArrayList<>();
         for (OrderItem orderItem : orderItemList) {

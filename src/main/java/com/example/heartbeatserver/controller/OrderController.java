@@ -79,4 +79,14 @@ public class OrderController {
         }
         return ResultGenerator.genFailResult(res);
     }
+
+    @PutMapping("/order/{orderNo}/finish")
+    @ApiOperation("/确认收货")
+    public Result<String> finishOrder(@PathVariable String orderNo) {
+        String res = this.orderService.finishOrder(orderNo);
+        if (res.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            return ResultGenerator.genSuccessResult(res);
+        }
+        return ResultGenerator.genFailResult(res);
+    }
 }

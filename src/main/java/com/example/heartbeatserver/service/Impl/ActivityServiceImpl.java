@@ -69,7 +69,10 @@ public class ActivityServiceImpl implements ActivityService {
         Activity activity = this.activityDao.getActivityInfo(activityId);
         ActivityVo activityVo = new ActivityVo();
         BeanUtil.copyProperties(activity, activityVo);
-        if(activity.getActivityType() == 1) {
+        if (activity == null) {
+            return null;
+        }
+        if (activity.getActivityType() == 1) {
             // 有奖活动
             CouponVo couponVo = this.getCoupon(activity.getCouponId());
             activityVo.setCoupon(couponVo);

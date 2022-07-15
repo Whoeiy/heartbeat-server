@@ -2,10 +2,13 @@ package com.example.heartbeatserver;
 
 import com.example.heartbeatserver.controller.param.AddGiftIntoCartParam;
 import com.example.heartbeatserver.dao.AddressDao;
+import com.example.heartbeatserver.dao.CouponDao;
 import com.example.heartbeatserver.service.Impl.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.Date;
 
 @SpringBootTest
 class HeartbeatServerApplicationTests {
@@ -86,6 +89,14 @@ class HeartbeatServerApplicationTests {
         System.out.println(this.settleService.getNormalServiceList(33));
     }
 
+    @Autowired
+    private CouponDao couponDao;
+
+    @Test
+    void testCoupon(){
+//        System.out.println(this.couponDao.getCustomerCouponList(10, new Date(1657106843)));
+        System.out.println(this.couponDao.getCustomerCouponList(2, new Date()));
+    }
 
 
 

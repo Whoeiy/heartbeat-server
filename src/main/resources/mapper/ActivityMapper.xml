@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.dao.ActivityDao">
+
+    <resultMap id="ActivityResultMap" type="com.example.heartbeatserver.entity.Activity">
+        <id column="activityId" jdbcType="INTEGER" property="activityId"/>
+        <result column="activityName" jdbcType="VARCHAR" property="activityName"/>
+        <result column="activityDetail" jdbcType="CLOB" property="activityDetail"/>
+        <result column="posterUrl" jdbcType="CLOB" property="posterUrl"/>
+        <result column="activityType" jdbcType="INTEGER" property="activityType"/>
+        <result column="activityStatus" jdbcType="INTEGER" property="activityStatus"/>
+        <result column="startTime" jdbcType="TIMESTAMP" property="startTime"/>
+        <result column="endTime" jdbcType="TIMESTAMP" property="endTime"/>
+        <result column="couponId" jdbcType="INTEGER" property="couponId"/>
+        <result column="showRank" jdbcType="INTEGER" property="showRank"/>
+        <result column="isShown" jdbcType="INTEGER" property="isShown"/>
+        <result column="createUser" jdbcType="INTEGER" property="createUser"/>
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="isDeleted" jdbcType="INTEGER" property="isDeleted"/>
+        <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+<!--    List<Activity> getActivityList();-->
+    <select id="getActivityList" resultMap="ActivityResultMap">
+        select * from activity
+        where isDeleted = 0 and isShown = 1
+        order by field(activityStatus, 1, 0, 2), startTime desc, activityId asc
+    </select>
+
+<!--    Activity getActivityInfo(Integer activityId);-->
+    <select id="getActivityInfo" resultType="com.example.heartbeatserver.entity.Activity">
+        select * from activity
+        where isDeleted = 0 and activityId = #{activityId}
+    </select>
+</mapper>
+
+
+
+
+

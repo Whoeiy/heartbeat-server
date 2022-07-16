@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.heartbeatserver.dao.PostDao">
+
+    <resultMap id="PostResultMap" type="com.example.heartbeatserver.entity.Post">
+        <id column="postId" jdbcType="INTEGER" property="postId"/>
+        <result column="postUser" jdbcType="INTEGER" property="postUser"/>
+        <result column="imgUrl" jdbcType="CLOB" property="imgUrl"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="postContent" jdbcType="CLOB" property="postContent"/>
+        <result column="activityId" jdbcType="INTEGER" property="activityId"/>
+        <result column="isDeleted" jdbcType="INTEGER" property="isDeleted"/>
+        <result column="createTime" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="updateTime" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+<!--    Post getPostDetail(Integer postId);-->
+    <select id="getPostDetail" resultType="com.example.heartbeatserver.entity.Post">
+        select * from mall_post
+        where isDeleted = 0 and postId = #{postId}
+    </select>
+
+<!--    List<Post> getPostListOfActivity(Integer activityId);-->
+    <select id="getPostListOfActivity" resultMap="PostResultMap">
+        select * from mall_post
+        where isDeleted = 0 and activityId = #{activityId}
+        order by createTime desc
+    </select>
+
+<!--    Integer insertPost(Post post);-->
+    <insert id="insertPost" parameterType="com.example.heartbeatserver.entity.Post">
+        insert into mall_post
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="postUser != null">
+                postUser,
+            </if>
+            <if test="imgUrl != null">
+                imgUrl,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="postContent != null">
+                postContent,
+            </if>
+            <if test="activityId != null">
+                activityId,
+            </if>
+            <if test="createTime != null">
+                createTime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="postUser != null">
+                #{postUser, jdbcType=INTEGER},
+            </if>
+            <if test="imgUrl != null">
+                #{imgUrl, jdbcType=CLOB},
+            </if>
+            <if test="title != null">
+                #{title, jdbcType=VARCHAR},
+            </if>
+            <if test="postContent != null">
+                #{postContent, jdbcType=CLOB},
+            </if>
+            <if test="activityId != null">
+                #{activityId, jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null">
+                #{createTime, jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+</mapper>

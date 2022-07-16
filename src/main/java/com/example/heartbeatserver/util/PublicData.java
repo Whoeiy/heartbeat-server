@@ -7,5 +7,8 @@ public interface PublicData {
     public static final String GIFT_DES_REDIS_ITEM_NAME = "GiftDes:giftId:";
     public static final String ORDER_REDIS_KEY = "Order_no_hash_key";
     public static final String ORDER_REDIS_ITEM_NAME = "Order:no:";
+    // POST
+    public static final String POST_REDIS_KEY = "Activity_post_key";
+    public static final String POST_USER_REDIS_KEY = "User_post_key:";
 
 }

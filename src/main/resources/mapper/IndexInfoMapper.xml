@@ -21,6 +21,13 @@
         <result column="originalPrice" jdbcType="DOUBLE" property="originalPrice" />
     </resultMap>
 
+    <resultMap id="IndexRecommendedGiftResultMap" type="com.example.heartbeatserver.controller.vo.IndexConfigGiftVo">
+        <id column="giftId" jdbcType="INTEGER" property="giftId" />
+        <result column="imgUrl" jdbcType="CLOB" property="giftCoverImg" />
+        <result column="giftName" jdbcType="VARCHAR" property="giftName" />
+        <result column="originalPrice" jdbcType="DOUBLE" property="originalPrice" />
+    </resultMap>
+
 <!--    List<CarouselVo> getCarouselList();-->
     <select id="getCarouselList" resultMap="CarouselResultMap">
         select imgUrl, jumpUrl from carousel
@@ -52,6 +59,17 @@
         <if test="configType != 2">
             order by c.configRank desc, c.configId asc
         </if>
+    </select>
+
+<!--    List<IndexConfigGiftVo> getRecommendedGiftList();-->
+    <select id="getRecommendedGiftList" resultMap="IndexRecommendedGiftResultMap">
+        select giftName, v.giftId giftId, imgUrl, originalPrice from gift as v
+        inner join (
+            select giftId from mall_gift_statics
+            order by recommended desc, bought desc
+            limit 4
+            ) as v2
+        on v.giftId = v2.giftId
     </select>
 
 </mapper>

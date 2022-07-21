@@ -1,5 +1,6 @@
 package com.example.heartbeatserver.controller;
 
+import com.example.heartbeatserver.common.ServiceResultEnum;
 import com.example.heartbeatserver.entity.EsGift;
 import com.example.heartbeatserver.service.Impl.EsGiftServiceImpl;
 import com.example.heartbeatserver.util.PageParam;
@@ -40,6 +41,15 @@ public class EsGiftController {
             return ResultGenerator.genSuccessResultData(esGift);
         }
         return ResultGenerator.genFailResult("未查询到该礼物信息");
+    }
+
+    @PutMapping("/gift/recommend/{giftId}")
+    public Result<String> recommendGift(@PathVariable Integer giftId) {
+        String res = this.esGiftService.recommendGift(giftId);
+        if (res.equals(ServiceResultEnum.SUCCESS.getResult())) {
+            return ResultGenerator.genSuccessResult();
+        }
+        return ResultGenerator.genFailResult(res);
     }
 
 }

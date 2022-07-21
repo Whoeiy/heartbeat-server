@@ -39,7 +39,14 @@ public class IndexInfoServiceImpl implements IIndexInfoService {
         indexInfoVo.setLabels(this.indexInfoDao.getIndexLabelList());
         indexInfoVo.setHotGifts(this.indexInfoDao.getIndexConfigGiftList(1));
         indexInfoVo.setNewGifts(this.indexInfoDao.getIndexConfigGiftList(2));
-        indexInfoVo.setRecommendGifts(this.indexInfoDao.getIndexConfigGiftList(3));
+//        indexInfoVo.setRecommendGifts(this.indexInfoDao.getIndexConfigGiftList(3));
+        indexInfoVo.setRecommendGifts(this.getRecommendedGift());
         return indexInfoVo;
     }
+
+    private List<IndexConfigGiftVo> getRecommendedGift() {
+        List<IndexConfigGiftVo> indexConfigGiftVoList = this.indexInfoDao.getRecommendedGiftList();
+        return indexConfigGiftVoList;
+    }
+
 }

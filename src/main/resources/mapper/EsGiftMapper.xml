@@ -90,4 +90,13 @@
         select giftId, giftName, imgUrl from gift
         where isDeleted = 0
     </select>
+
+<!--    Integer recommendGift(Integer giftId);-->
+    <update id="recommendGift">
+       insert into mall_gift_statics
+       (giftId,recommended)
+       values (#{giftId, jdbcType=INTEGER},1)
+       on duplicate key update
+        recommended = recommended + 1
+    </update>
 </mapper>

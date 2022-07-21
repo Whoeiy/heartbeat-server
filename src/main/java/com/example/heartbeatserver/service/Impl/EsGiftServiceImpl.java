@@ -1,6 +1,7 @@
 package com.example.heartbeatserver.service.Impl;
 
 //import com.example.heartbeatserver.controller.EsGiftRepository;
+import com.example.heartbeatserver.common.ServiceResultEnum;
 import com.example.heartbeatserver.controller.EsGiftRepository;
 import com.example.heartbeatserver.dao.EsGiftDao;
 import com.example.heartbeatserver.entity.*;
@@ -145,5 +146,13 @@ public class EsGiftServiceImpl implements EsGiftService {
         esGift.setGiftCategory(esCategories);
         esGift.setGiftLabelList(esLabels);
         return esGift;
+    }
+
+    @Override
+    public String recommendGift(Integer giftId) {
+        if (this.esGiftDao.recommendGift(giftId) > 0) {
+            return ServiceResultEnum.SUCCESS.getResult();
+        }
+        return ServiceResultEnum.DB_ERROR.getResult();
     }
 }

@@ -73,10 +73,13 @@ public class OrderServiceImpl implements OrderService {
         Double sumPrice = 0.0;
         List<CartItem> cartItemList = buyCart.getCartItemList();
         List<OrderItem> orderItemList = new ArrayList<>();
+        List<GiftStatics> giftStaticsList = new ArrayList<>();
         for (int i = 0; i < cartItemList.size(); i++) {
             CartItem cartItem = cartItemList.get(i);
             OrderItem orderItem = new OrderItem();
+            GiftStatics giftStatics = new GiftStatics();
             orderItem.setGiftId(cartItem.getGiftId());
+            giftStatics.setGiftId(cartItem.getGiftId());
             orderItem.setOrderNo(order.getOrderNo());
             // 获得礼物的描述信息
             String itemName = PublicData.GIFT_DES_REDIS_ITEM_NAME + cartItem.getGiftId();
@@ -89,6 +92,7 @@ public class OrderServiceImpl implements OrderService {
                 return ServiceResultEnum.DATA_NOT_EXIST.getResult() + " - redis中不存在该礼物的描述信息";
             }
             orderItem.setGiftCount(cartItem.getCount());
+            giftStatics.setBought(cartItem.getCount());
             orderItem.setGiftPrice(cartItem.getPrice());
             // 计算小计金额
             Double sellingPrice = cartItem.getPrice() * cartItem.getCount();
@@ -96,6 +100,7 @@ public class OrderServiceImpl implements OrderService {
             orderItem.setService(cartItem.getService());
             // 加入到list中
             orderItemList.add(orderItem);
+            giftStaticsList.add(giftStatics);
             sumPrice += sellingPrice;
         }
 
@@ -103,7 +108,8 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPrice(sumPrice);
         Integer resOrder = this.orderDao.insertOrder(order);
         Integer resOrderItem = this.orderDao.insertBatchOrderItem(orderItemList);
-        if(resOrder > 0 && resOrderItem > 0) {
+        Integer resGiftStatics = this.orderDao.updateGiftBoughtTimes(giftStaticsList);
+        if(resOrder > 0 && resOrderItem > 0 && resGiftStatics > 0) {
             return ServiceResultEnum.SUCCESS.getResult() + "," + order.getOrderNo();
         }
         return ServiceResultEnum.DB_ERROR.getResult();

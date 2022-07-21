@@ -17,4 +17,7 @@ public interface IndexInfoDao {
 
     // 查询首页配置礼物列表
     List<IndexConfigGiftVo> getIndexConfigGiftList(Integer configType);
+
+    // 查询推荐礼物列表
+    List<IndexConfigGiftVo> getRecommendedGiftList();
 }

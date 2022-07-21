@@ -1,6 +1,6 @@
 package com.example.heartbeatserver.dao;
 
-import com.example.heartbeatserver.controller.vo.OrderVo;
+import com.example.heartbeatserver.entity.GiftStatics;
 import com.example.heartbeatserver.entity.Order;
 import com.example.heartbeatserver.entity.OrderItem;
 import com.example.heartbeatserver.service.pojo.OrderPayInfo;
@@ -31,4 +31,7 @@ public interface OrderDao {
 
     // 查询订单Item列表
     List<OrderItem> getOrderItemList(String orderNo);
+
+    // 更新礼物购买数
+    Integer updateGiftBoughtTimes(List<GiftStatics> giftStaticsList);
 }

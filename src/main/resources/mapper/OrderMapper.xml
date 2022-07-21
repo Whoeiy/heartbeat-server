@@ -168,6 +168,24 @@
         </foreach>
     </insert>
 
+<!--    Integer updateGiftBoughtTimes(List<GIftStatics> giftStaticsList);-->
+    <update id="updateGiftBoughtTimes" parameterType="java.util.List">
+        insert into mall_gift_statics
+        (giftId,bought)
+        values
+        <foreach collection="list" item="item" separator=",">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="item.giftId != null">
+                    #{item.giftId, jdbcType=INTEGER},
+                </if>
+                <if test="item.bought != null">
+                    #{item.bought, jdbcType=INTEGER},
+                </if>
+            </trim>
+        </foreach>
+        on duplicate key update
+        bought = bought + values(bought)
+    </update>
 
 <!--    Integer updateOrderPayInfo(OrderPayInfo info);-->
     <update id="updateOrderPayInfo">

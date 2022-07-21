@@ -32,5 +32,8 @@ public interface EsGiftDao {
     // 查询礼物描述信息(for cart)
     List<CartGiftDes> getGiftDes();
 
+    // 推荐礼物
+    Integer recommendGift(Integer giftId);
+
 
 }

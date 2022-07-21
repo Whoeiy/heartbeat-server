@@ -244,6 +244,9 @@ public class CartServiceImpl implements CartService {
             int i = 0;
             for (; i < giftIds.length; i++) {
                 if (cartItem.getGiftId() == giftIds[i]) {
+                    if (cartItem.getService() == null){
+                        return ServiceResultEnum.DB_ERROR.getResult() + " - 未选择定制服务";
+                    }
                     buyCart.getCartItemList().add(cartItem);
                     break;
                 }

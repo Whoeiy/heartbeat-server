@@ -24,5 +24,8 @@ public interface EsGiftService {
     // 根据giftId查询礼物详情
     EsGift getGiftDetailById(Integer giftId);
 
+    // 推荐礼物
+    String recommendGift(Integer giftId);
+
 
 }

@@ -98,6 +98,14 @@ class HeartbeatServerApplicationTests {
         System.out.println(this.couponDao.getCustomerCouponList(2, new Date()));
     }
 
+    @Autowired
+    private PostServiceImpl postService;
+
+    @Test
+    void testPost(){
+        this.postService.getPostRankList(12);
+    }
+
 
 
 

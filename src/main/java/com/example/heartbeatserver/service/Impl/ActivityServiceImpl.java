@@ -2,6 +2,8 @@ package com.example.heartbeatserver.service.Impl;
 
 import com.example.heartbeatserver.controller.vo.ActivityVo;
 import com.example.heartbeatserver.controller.vo.CouponVo;
+import com.example.heartbeatserver.controller.vo.RankItemVo;
+import com.example.heartbeatserver.controller.vo.RankVo;
 import com.example.heartbeatserver.dao.ActivityDao;
 import com.example.heartbeatserver.dao.CouponDao;
 import com.example.heartbeatserver.entity.Activity;
@@ -26,6 +28,10 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Autowired
     private CouponDao couponDao;
+
+    @Autowired
+    private PostServiceImpl postService;
+
 
     @Override
     public PageResult<List<ActivityVo>> getActivityList(PageParam param) {
@@ -82,6 +88,27 @@ public class ActivityServiceImpl implements ActivityService {
         CouponVo couponVo = this.getCoupon(activity.getCouponId());
         activityVo.setCoupon(couponVo);
         return activityVo;
+    }
+
+    @Override
+    public RankVo gitActivityRank(Integer activityId, Integer customerId) {
+        RankVo rankVo = new RankVo();
+        // 排名项
+        List<RankItemVo> itemList = this.postService.getPostRankList(activityId);
+        rankVo.setActivityId(activityId);
+        rankVo.setItems(itemList);
+        // 用户最高排名
+        Integer customerRank = this.postService.getCustomerPostRank(activityId, customerId);
+        rankVo.setCustomerRank(customerRank);
+        // coupon信息
+        Activity activity = this.activityDao.getActivityInfo(activityId);
+        rankVo.setActivityStatus(activity.getActivityStatus());
+        if (activity.getActivityStatus() == 2 && customerRank == 1) {
+            rankVo.setCouponId(activity.getCouponId());
+        } else {
+            rankVo.setCouponId(null);
+        }
+        return rankVo;
     }
 
     private CouponVo getCoupon(Integer couponId) {

@@ -68,4 +68,5 @@ public class PostController {
         }
         return ResultGenerator.genFailResult(ServiceResultEnum.DATA_NOT_EXIST.getResult());
     }
+
 }

@@ -3,7 +3,10 @@ package com.example.heartbeatserver.controller;
 
 import com.example.heartbeatserver.common.ServiceResultEnum;
 import com.example.heartbeatserver.controller.vo.ActivityVo;
+import com.example.heartbeatserver.controller.vo.RankItemVo;
+import com.example.heartbeatserver.controller.vo.RankVo;
 import com.example.heartbeatserver.service.Impl.ActivityServiceImpl;
+import com.example.heartbeatserver.service.Impl.PostServiceImpl;
 import com.example.heartbeatserver.util.PageParam;
 import com.example.heartbeatserver.util.PageResult;
 import com.example.heartbeatserver.util.Result;
@@ -23,6 +26,9 @@ public class ActivityController {
     @Autowired
     private ActivityServiceImpl activityService;
 
+    @Autowired
+    private PostServiceImpl postService;
+
 
     @GetMapping("/list")
     @ApiOperation("/查询活动列表")
@@ -41,4 +47,12 @@ public class ActivityController {
         }
         return ResultGenerator.genSuccessResultData(activityVo);
     }
+
+    @GetMapping("/{activityId}/chart")
+    @ApiOperation("/查询活动排行榜")
+    public Result<RankVo> getActivityRank(@PathVariable Integer activityId, Integer customerId){
+        RankVo rankVo = this.activityService.gitActivityRank(activityId, customerId);
+        return ResultGenerator.genSuccessResultData(rankVo);
+    }
+
 }

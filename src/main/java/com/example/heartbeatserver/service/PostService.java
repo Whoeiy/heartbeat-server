@@ -1,6 +1,7 @@
 package com.example.heartbeatserver.service;
 
 import com.example.heartbeatserver.controller.vo.PostVo;
+import com.example.heartbeatserver.controller.vo.RankItemVo;
 import com.example.heartbeatserver.entity.Post;
 import com.example.heartbeatserver.util.PageParam;
 import com.example.heartbeatserver.util.PageResult;
@@ -20,4 +21,10 @@ public interface PostService {
 
     // 查询帖子详情
     PostVo getPostVoDetail(Integer postId, Integer customerId);
+
+    // 查询排名列表
+    List<RankItemVo> getPostRankList(Integer activityId);
+
+    // 查询用户榜上最高排名
+    Integer getCustomerPostRank(Integer activityId, Integer customerId);
 }

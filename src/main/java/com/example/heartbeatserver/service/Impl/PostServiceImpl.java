@@ -2,6 +2,7 @@ package com.example.heartbeatserver.service.Impl;
 
 import com.example.heartbeatserver.common.ServiceResultEnum;
 import com.example.heartbeatserver.controller.vo.PostVo;
+import com.example.heartbeatserver.controller.vo.RankItemVo;
 import com.example.heartbeatserver.dao.PostDao;
 import com.example.heartbeatserver.entity.MallCustomer;
 import com.example.heartbeatserver.entity.Post;
@@ -15,11 +16,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -50,8 +53,8 @@ public class PostServiceImpl implements PostService {
         if (post == null) {
             return ServiceResultEnum.DATA_NOT_EXIST.getResult() + " - 帖子";
         }
-        String key = PublicData.POST_REDIS_KEY;
-        String value = post.getActivityId() + "-" + postId;
+        String key = PublicData.POST_REDIS_KEY + "_" +post.getActivityId();
+        String value = postId.toString();
         String customerKey = PublicData.POST_USER_REDIS_KEY + customerId + "-" + postId;
 //        String customerValue = customerId + "-" + postId;
 
@@ -112,7 +115,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageResult<List<PostVo>> getPostVoListOfAct(Integer activityId, Integer customerId, PageParam param) {
-        String key = PublicData.POST_REDIS_KEY;
+        String key = PublicData.POST_REDIS_KEY + "_" + activityId;
 
         // 分页
         PageHelper.startPage(param.getPageNum(), param.getPageSize());
@@ -130,7 +133,7 @@ public class PostServiceImpl implements PostService {
         for (Post post :
                 posts) {
 
-            String value = post.getActivityId() + "-" + post.getPostId();
+            String value = post.getPostId().toString();
             String customerKey = PublicData.POST_USER_REDIS_KEY + customerId + "-" + post.getPostId();
             PostVo postVo = new PostVo();
             BeanUtil.copyProperties(post, postVo);
@@ -159,17 +162,17 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostVo getPostVoDetail(Integer postId, Integer customerId) {
-        String key = PublicData.POST_REDIS_KEY;
-
         Post post = this.postDao.getPostDetail(postId);
         if(post == null) {
             return null;
         }
 
+        String key = PublicData.POST_REDIS_KEY+"_"+post.getActivityId();
+
         PostVo postVo = new PostVo();
         BeanUtil.copyProperties(post, postVo);
 
-        String value = post.getActivityId() + "-" + post.getPostId();
+        String value = post.getPostId().toString();
         String customerKey = PublicData.POST_USER_REDIS_KEY + customerId + "-" + post.getPostId();
 
         // 获取用户信息
@@ -190,5 +193,45 @@ public class PostServiceImpl implements PostService {
         }
 
         return postVo;
+    }
+
+    @Override
+    public List<RankItemVo> getPostRankList(Integer activityId) {
+        String key = PublicData.POST_REDIS_KEY+"_"+activityId;
+        Set<ZSetOperations.TypedTuple<Object>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, 4);
+        List<ZSetOperations.TypedTuple<Object>> list = new ArrayList<>(set);
+//        System.out.println(list);
+        List<RankItemVo> itemVoList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            Integer postId = Integer.parseInt(list.get(i).getValue().toString());
+            Post post = this.postDao.getPostDetail(postId);
+            RankItemVo itemVo = new RankItemVo();
+            itemVo.setPostId(postId);
+            itemVo.setPostUser(post.getPostUser());
+            // 用户名称
+            MallCustomer customer = mallCustomerService.getById(post.getPostUser());
+            itemVo.setCustomerName(customer.getCustomername());
+            itemVo.setTitle(post.getTitle());
+            itemVo.setLikeCount(list.get(i).getScore().intValue());
+            itemVoList.add(itemVo);
+        }
+        return itemVoList;
+    }
+
+    @Override
+    public Integer getCustomerPostRank(Integer activityId, Integer customerId) {
+        String key = PublicData.POST_REDIS_KEY+"_"+activityId;
+        Set<ZSetOperations.TypedTuple<Object>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, 4);
+        List<ZSetOperations.TypedTuple<Object>> list = new ArrayList<>(set);
+        Integer rank = 0;
+        for (int i = 0; i < list.size(); i++) {
+            Integer postId = Integer.parseInt(list.get(i).getValue().toString());
+            Post post = this.postDao.getPostDetail(postId);
+            if(post.getPostUser() == customerId) {
+                rank = i + 1;
+                break;
+            }
+        }
+        return rank;
     }
 }

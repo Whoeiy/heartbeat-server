@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface EsGiftRepository extends ElasticsearchRepository<EsGift, Integer> {
     List<EsGift> findByGiftNameOrGiftIntro(String giftName, String giftIntro);
+
+    List<EsGift> findAllByIsDeletedEquals(Integer isDeleted);
 }

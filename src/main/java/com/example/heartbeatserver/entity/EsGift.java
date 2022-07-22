@@ -17,7 +17,7 @@ public class EsGift {
     @Field(type = FieldType.Integer)
     private Integer giftId;
 
-    @Field(analyzer = "ik_max_word", type = FieldType.Text)
+    @Field(analyzer = "ik_smart", type = FieldType.Text)
     private String giftName;
 
     @Field(analyzer = "ik_max_word", type = FieldType.Text)

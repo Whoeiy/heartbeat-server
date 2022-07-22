@@ -10,12 +10,25 @@ import com.example.heartbeatserver.service.pojo.GiftCategoryIds;
 import com.example.heartbeatserver.service.pojo.GiftLabelsIds;
 import com.example.heartbeatserver.util.BeanUtil;
 import com.example.heartbeatserver.util.PageParam;
+import com.example.heartbeatserver.util.PageResult;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EsGiftServiceImpl implements EsGiftService {
@@ -25,6 +38,9 @@ public class EsGiftServiceImpl implements EsGiftService {
 
     @Autowired
     private EsGiftRepository esGiftRepository;
+
+    @Autowired
+    private ElasticsearchRestTemplate restTemplate;
 
     @Override
     public int importAll() {
@@ -104,6 +120,7 @@ public class EsGiftServiceImpl implements EsGiftService {
         return ids;
     }
 
+
     @Override
     public void delete(Integer giftId) {
         esGiftRepository.deleteById(giftId);
@@ -129,10 +146,94 @@ public class EsGiftServiceImpl implements EsGiftService {
         return esGiftRepository.findByGiftNameOrGiftIntro(keyword, keyword);
     }
 
-    @Override
-    public List<EsGift> sortSearch(String keyword, PageParam pageParam) {
-        return null;
+    public List<EsGift> testSearch(Integer isDeleted) {
+        return esGiftRepository.findAllByIsDeletedEquals(isDeleted);
     }
+
+    private Map<String, Float> queryFields() {
+        Map<String, Float> fields = new HashMap<>();
+        fields.put("giftName", 3F);
+        fields.put("giftIntro", 2F);
+//        fields.put("giftCategory.categoryName", 5F);
+//        fields.put("giftLabelList.labelName", 4F);
+        return fields;
+    }
+
+    @Override
+    public PageResult<List<EsGift>> Search(String keyword, Integer searchType, Integer sort, PageParam param) {
+        PageResult pageResult = new PageResult();
+        pageResult.setPageSize(param.getPageSize());
+        pageResult.setCurrPage(param.getPageNum());
+
+        NativeSearchQuery nativeSearchQuery = null;
+        if (searchType == 1) {
+            // 分类搜索
+            nativeSearchQuery = this.categoryOrLabelQuery(keyword, 1, sort, param);
+        } else if (searchType == 2) {
+            // 标签搜索
+            nativeSearchQuery = this.categoryOrLabelQuery(keyword, 2, sort, param);
+        } else {
+            // 综合搜索
+            nativeSearchQuery = this.generalQuery(keyword, sort, param);
+        }
+        SearchHits<EsGift> searchHits = restTemplate.search(nativeSearchQuery, EsGift.class);
+        pageResult.setTotalCount((int)searchHits.getTotalHits());
+        Integer page = 0;
+        if (pageResult.getTotalCount() != 0) {
+            page = pageResult.getTotalCount() / pageResult.getPageSize() + 1;
+        }
+        pageResult.setTotalPage(page);
+
+        List<EsGift> esGiftList = new ArrayList<>();
+        for(SearchHit<EsGift> searchHit : searchHits) {
+            EsGift esGift = searchHit.getContent();
+            esGiftList.add(esGift);
+        }
+
+        pageResult.setList(esGiftList);
+        return pageResult;
+    }
+
+    private NativeSearchQuery categoryOrLabelQuery(String keyword, Integer search, Integer sort, PageParam param) {
+        String searchType = "giftCategory.categoryName";
+        if (search == 2) {
+            // 按照标签匹配
+            searchType = "giftLabelList.labelName";
+        }
+        FieldSortBuilder sortType = SortBuilders.fieldSort("createTime").order(SortOrder.DESC);
+        if (sort == 2) {
+            sortType = SortBuilders.fieldSort("originalPrice").order(SortOrder.DESC);
+        }
+        if (sort == 3) {
+            sortType = SortBuilders.fieldSort("originalPrice").order(SortOrder.ASC);
+        }
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.boolQuery().should(QueryBuilders.matchPhraseQuery(searchType, keyword)))
+                .withSorts(sortType)
+                .withPageable(PageRequest.of(param.getPageNum() - 1, param.getPageSize()))
+                .build();
+        return nativeSearchQuery;
+    }
+
+    private NativeSearchQuery generalQuery(String keyword, Integer sort, PageParam param) {
+        FieldSortBuilder sortType = SortBuilders.fieldSort("createTime").order(SortOrder.DESC);
+        if (sort == 2) {
+            sortType = SortBuilders.fieldSort("originalPrice").order(SortOrder.DESC);
+        }
+        if (sort == 3) {
+            sortType = SortBuilders.fieldSort("originalPrice").order(SortOrder.ASC);
+        }
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withQuery(QueryBuilders.boolQuery()
+                        .should(QueryBuilders.queryStringQuery(keyword).field("giftName"))
+                        .should(QueryBuilders.queryStringQuery(keyword).field("giftCategory.categoryName"))
+                        .should(QueryBuilders.queryStringQuery(keyword).field("giftLabelList.labelName")))
+                .withSorts(sortType)
+                .withPageable(PageRequest.of(param.getPageNum() - 1, param.getPageSize()))
+                .build();
+        return nativeSearchQuery;
+    }
+
 
     @Override
     public EsGift getGiftDetailById(Integer giftId) {

@@ -4,6 +4,7 @@ import com.example.heartbeatserver.common.ServiceResultEnum;
 import com.example.heartbeatserver.entity.EsGift;
 import com.example.heartbeatserver.service.Impl.EsGiftServiceImpl;
 import com.example.heartbeatserver.util.PageParam;
+import com.example.heartbeatserver.util.PageResult;
 import com.example.heartbeatserver.util.Result;
 import com.example.heartbeatserver.util.ResultGenerator;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +29,16 @@ public class EsGiftController {
     }
 
     @GetMapping("/es/search")
-    public Result<List<EsGift>> search(@RequestParam String keyword) {
-        PageParam pageParam = new PageParam(1,10);
-        List<EsGift> esGiftList = esGiftService.simpleSearch(keyword, pageParam);
-        return ResultGenerator.genSuccessResultData(esGiftList);
+    public Result<List<EsGift>> search(@RequestParam String keyword, @RequestParam Integer sortBy,
+                                       @RequestParam Integer pageNum, @RequestParam Integer pageSize,
+                                       Integer searchType) {
+        PageParam pageParam = new PageParam(pageNum, pageSize);
+        if (searchType == null) {
+            // 默认综合搜索
+            searchType = 3;
+        }
+        PageResult pageResult = this.esGiftService.Search(keyword, searchType, sortBy, pageParam);
+        return ResultGenerator.genSuccessResultData(pageResult);
     }
 
     @GetMapping("/gift/detail/{giftId}")

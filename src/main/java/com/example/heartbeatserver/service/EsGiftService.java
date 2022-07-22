@@ -19,7 +19,7 @@ public interface EsGiftService {
     List<EsGift> simpleSearch(String keyword, PageParam pageParam);
 
     // 综合搜索
-    List<EsGift> sortSearch(String keyword, PageParam pageParam);
+    PageResult<List<EsGift>> Search(String keyword, Integer searchType, Integer sort, PageParam param);
 
     // 根据giftId查询礼物详情
     EsGift getGiftDetailById(Integer giftId);

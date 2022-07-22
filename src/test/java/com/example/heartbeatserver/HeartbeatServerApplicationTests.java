@@ -4,6 +4,7 @@ import com.example.heartbeatserver.controller.param.AddGiftIntoCartParam;
 import com.example.heartbeatserver.dao.AddressDao;
 import com.example.heartbeatserver.dao.CouponDao;
 import com.example.heartbeatserver.service.Impl.*;
+import com.example.heartbeatserver.util.PageParam;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +33,13 @@ class HeartbeatServerApplicationTests {
     @Test
     void testImportAll(){
         System.out.println(this.esGiftService.importAll());
+    }
+
+    @Test
+    void testSearch() {
+//        this.esGiftService.sortSearch("耳环");
+//        this.esGiftService.categorySearch("耳环");
+//        this.esGiftService.categoryOrLabelSearch("送给他", 2, 3, new PageParam(1,10));
     }
 
     @Autowired
